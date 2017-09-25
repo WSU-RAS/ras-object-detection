@@ -1,0 +1,9 @@
+/backup_*
+*.out
+*.err
+*.data
+*.txt
+/darknet
+/data
+/results
+/TableDarknetDataset
