@@ -63,7 +63,7 @@ def plotLearningCurve(title, y, x, curves, filename, loc=5):
     Curves - data to plot
     loc - place for legend
     """
-    fig, ax = plt.subplots(1,1,figsize=(12, 6),dpi=200)
+    fig, ax = plt.subplots(1,1,figsize=(12, 6)) #,dpi=200)
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     for i, (name, data) in enumerate(curves):
         plt.plot(data[:,0], data[:,1], color=plotColors[i],
@@ -73,7 +73,7 @@ def plotLearningCurve(title, y, x, curves, filename, loc=5):
     plt.xlabel(x)
     plt.legend(loc=loc)
 
-    plt.savefig(filename+".png")
+    plt.savefig(filename+".png", bbox_inches='tight', pad_inches=0)
 
 if __name__ == "__main__":
     # Make them look prettier
