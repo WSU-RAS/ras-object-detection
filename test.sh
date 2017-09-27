@@ -3,12 +3,12 @@
 #SBATCH --output=test.out
 #SBATCH --error=test.err
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=1
 #SBATCH --nodes=1-1
 #SBATCH --gres=gpu:tesla:4
-#SBATCH --partition=taylor
-#SBATCH --time=0-05:00:00
-#SBATCH --mem=7G
+#SBATCH --partition=kamiak
+#SBATCH --time=0-03:00:00
+#SBATCH --mem=5G
 
 #
 # Learning curve files
@@ -20,13 +20,15 @@ data="/data/vcea/matt.taylor/Projects/ras-yolo/grey-table"
 datasetName="TableDarknetDataset.tar.gz"
 # Darknet executable (in the data folder)
 darknet="darknet/darknet"
+# Where we'll save the results from testing
+resultsFolder="$data/results"
 
 #
 # ---
 #
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-module load cuda/8.0.44 cudnn/5.1_cuda8.0
+module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0
 
 function clean_up 
 {
@@ -52,30 +54,39 @@ echo " - data"
 cp "$data"/*.txt "$data"/*.data "$data"/*.names "$data"/*.cfg .
 echo "Getting data: done"
 
+echo "Making sure darknet is built: starting"
+cd darknet
+make
+cd ..
+echo "Making sure darknet is built: done"
+
 echo "Extracting data: started"
 # Note: only using images/ and labels/ folders, not the other files
 tar xzf "$datasetName"
 echo "Extracting data: done"
 
 echo "Testing network: started"
+mkdir -p "$resultsFolder"
 for i in *.data; do
     amount=${i//[!0-9]/} # just the number in the filename
     backup=$(grep backup "$i" | sed 's/backup = //')
     final="$backup/${name}_final.weights"
 
     if [[ -e "$final" ]]; then
-        mkdir -p results
+        results="$resultsFolder/$amount.txt"
 
-        # Test these final weights
-        echo " - testing $final"
-        /usr/bin/time -v "$darknet" detector recall "$i" "$name.cfg" "$final" -gpus $SLURM_JOB_GPUS
+        if [[ -e "$results" ]]; then
+            # Skip
+            echo " - skipping $i, already tested: $results"
+        else
+            # Test these final weights
+            echo " - testing $final"
+            /usr/bin/time -v "$darknet" detector recall "$i" "$name.cfg" "$final" -gpus $SLURM_JOB_GPUS
 
-        # Copy the results back
-        results="$data/results/$amount"
-        echo " - copying results to: $results"
-        mkdir -p "$results"
-        cp results/* "$results"
-        rm -rf results
+            # Copy the results back
+            echo " - copying results to: $results"
+            cp "results.txt" "$results"
+        fi
     else
         # Skip
         echo " - skipping $i no final weights $final"

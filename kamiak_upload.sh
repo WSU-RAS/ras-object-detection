@@ -5,6 +5,11 @@ echo "Warning: if there's already .data files on Kamiak, it'll run on any not ye
 from="/home/garrett/Documents/School/17_Fall/CASAS/RAS/kamiak/grey_table/"
 to="kamiak:/data/vcea/matt.taylor/Projects/ras-yolo/grey-table/"
 
+# Update darknet
+cd darknet
+git pull
+cd ..
+
 # Copy only select files
 #
 # One directory: https://stackoverflow.com/a/21830454/2698494

@@ -38,7 +38,7 @@ weights="/data/vcea/matt.taylor/Projects/ras-yolo/darknet/$weightsName"
 #
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-module load cuda/8.0.44 cudnn/5.1_cuda8.0
+module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0
 
 function clean_up 
 {
@@ -65,6 +65,12 @@ cp "$data"/*.txt "$data"/*.data "$data"/*.names "$data"/*.cfg .
 echo " - weights"
 cp "$weights" .
 echo "Getting data: done"
+
+echo "Making sure darknet is built: starting"
+cd darknet
+make
+cd ..
+echo "Making sure darknet is built: done"
 
 echo "Extracting data: started"
 # Note: only using images/ and labels/ folders, not the other files
