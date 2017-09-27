@@ -3,6 +3,8 @@
 *.err
 *.data
 *.txt
+*.png
+*.jpg
 /darknet
 /data
 /results

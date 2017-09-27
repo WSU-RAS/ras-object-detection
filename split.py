@@ -26,6 +26,7 @@ Note:
 import os
 import math
 import random
+import hashlib
 
 # Make this repeatable
 random.seed(0)
@@ -67,6 +68,54 @@ def createDataFile(outputFile, train_file, valid_file, label_file, backup_dir):
         f.write("backup = " + backup_dir + "\n")
         f.write("eval = wsu\n")
 
+# Based on:
+# http://pythoncentral.io/finding-duplicate-files-with-python/
+def hashfile(filename, blocksize=65536):
+    hasher = hashlib.md5()
+
+    with open(filename, 'rb') as f:
+        while True:
+            buf = f.read(blocksize)
+            hasher.update(buf)
+
+            if not buf:
+                break
+
+    return hasher.hexdigest()
+
+def clean(data, useLabels=False):
+    """
+    Remove duplicates in the data
+
+    useLables:
+        if true, will use label files which are smaller than image files
+        if false, will use the image files to find duplicates
+    """
+    print("Before clean:", len(data), "examples")
+
+    duplicates = {}
+    cleanData = []
+
+    for img, label in data:
+        if useLabels:
+            filename = label
+        else:
+            filename = img
+
+        file_hash = hashfile(label)
+
+        if file_hash in duplicates:
+            duplicates[file_hash].append(filename)
+        else:
+            duplicates[file_hash] = [filename]
+
+            # Not a duplicate, so use this in the test
+            cleanData.append((img, label))
+
+    print("After clean:", len(cleanData), "examples")
+
+    return cleanData
+
 if __name__ == "__main__":
     folder          = "TableDarknetDataset"
     label_file      = "labels.names"
@@ -87,7 +136,7 @@ if __name__ == "__main__":
     # Combine so we can shuffle
     combined = list(zip(images, labels))
     random.shuffle(combined)
-    images, labels = zip(*combined)
+    #images, labels = zip(*combined)
 
     # Split the data
     #
@@ -97,12 +146,12 @@ if __name__ == "__main__":
     #testing_end  = remaining amount
 
     # Turns out we don't care about the labels?
-    training_data = images[:training_end]
-    validate_data = images[training_end:validate_end]
-    testing_data  = images[validate_end:]
+    training_data = combined[:training_end]
+    validate_data = combined[training_end:validate_end]
+    testing_data  = combined[validate_end:]
 
     with open(os.path.join(training_prefix + '_all.txt'), 'w') as f:
-        for img in training_data:
+        for img, label in training_data:
             f.write(img + "\n")
 
     # For now don't train on all since we only skip 3 images when doing the
@@ -111,28 +160,24 @@ if __name__ == "__main__":
     #        '_all.txt', validate_file, label_file, backup_prefix)
 
     with open(validate_file, 'w') as f:
-        for img in validate_data:
+        for img, label in validate_data:
             f.write(img + "\n")
 
+    # Remove duplicates from the testing data
+    testing_data = clean(testing_data)
+
     with open(testing_file, 'w') as f:
-        for img in testing_data:
+        for img, label in testing_data:
             f.write(img + "\n")
 
     # For the learning curve, vary the number of examples in the training data
-    #startingAmount = 1000
-    #varyBy = 1000
-    #endingAmount = len(training_data)
+    amounts = [200, 400, 600, 800, 1000, 2000]
 
-    # For the initial test, make it train very quick
-    startingAmount = 200
-    varyBy = 200
-    endingAmount = 1000
-
-    for amount in range(startingAmount, endingAmount, varyBy):
+    for amount in amounts:
         filename = 'training_'+str(amount)+'.txt'
 
         with open(filename, 'w') as f:
-            for img in training_data[:amount]:
+            for img, label in training_data[:amount]:
                 f.write(img + "\n")
 
         createDataFile(data_prefix + '_' + str(amount) + '.data',
