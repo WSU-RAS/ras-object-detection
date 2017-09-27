@@ -7,8 +7,8 @@
 #SBATCH --nodes=1-1
 #SBATCH --gres=gpu:tesla:4
 #SBATCH --partition=kamiak
-#SBATCH --time=0-03:00:00
-#SBATCH --mem=5G
+#SBATCH --time=0-00:30:00
+#SBATCH --mem=2G
 
 #
 # Learning curve files
