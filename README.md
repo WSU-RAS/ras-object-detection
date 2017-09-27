@@ -1,6 +1,6 @@
 ras-object-detection
 ====================
-This is code for training a CNN for object detection for the RAS project using YOLO on darknet and generating a learning curve. Look in individual code files fore more documentation. Below is the general process, though you will have to modify for your particular setup.
+This is code for training a CNN for object detection for the RAS project using YOLO on darknet and generating a learning curve. Look in individual code files for more documentation. Below is the general process, though you will have to modify for your particular setup.
 
 ### Split the data
 
