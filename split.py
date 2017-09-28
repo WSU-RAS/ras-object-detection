@@ -83,7 +83,7 @@ def hashfile(filename, blocksize=65536):
 
     return hasher.hexdigest()
 
-def clean(data, useLabels=False):
+def clean(data):
     """
     Remove duplicates in the data
 
@@ -97,17 +97,12 @@ def clean(data, useLabels=False):
     cleanData = []
 
     for img, label in data:
-        if useLabels:
-            filename = label
-        else:
-            filename = img
-
-        file_hash = hashfile(label)
+        file_hash = hashfile(img)
 
         if file_hash in duplicates:
-            duplicates[file_hash].append(filename)
+            duplicates[file_hash].append(img)
         else:
-            duplicates[file_hash] = [filename]
+            duplicates[file_hash] = [img]
 
             # Not a duplicate, so use this in the test
             cleanData.append((img, label))
@@ -135,7 +130,16 @@ if __name__ == "__main__":
 
     # Combine so we can shuffle
     combined = list(zip(images, labels))
+
+    # Remove duplicates from the testing data
+    # Note: skip since it turns out there are none (see with `jdupes .`)
+    #print("Removing duplicates")
+    #combined = clean(combined)
+
+    # Shuffle
     random.shuffle(combined)
+
+    # If we need to split it back into images and labels...
     #images, labels = zip(*combined)
 
     # Split the data
@@ -150,9 +154,9 @@ if __name__ == "__main__":
     validate_data = combined[training_end:validate_end]
     testing_data  = combined[validate_end:]
 
-    with open(os.path.join(training_prefix + '_all.txt'), 'w') as f:
-        for img, label in training_data:
-            f.write(img + "\n")
+    #with open(os.path.join(training_prefix + '_all.txt'), 'w') as f:
+    #    for img, label in training_data:
+    #        f.write(img + "\n")
 
     # For now don't train on all since we only skip 3 images when doing the
     # learning curve by 1000s
@@ -163,23 +167,21 @@ if __name__ == "__main__":
         for img, label in validate_data:
             f.write(img + "\n")
 
-    # Remove duplicates from the testing data
-    testing_data = clean(testing_data)
-
     with open(testing_file, 'w') as f:
         for img, label in testing_data:
             f.write(img + "\n")
 
     # For the learning curve, vary the number of examples in the training data
-    amounts = [200, 400, 600, 800, 1000, 2000]
+    # Do 10%, 20%, 30%, ... 100% percent
+    amounts = [(i, math.floor(i/100*len(training_data))) for i in range(10,110,10)]
 
-    for amount in amounts:
-        filename = 'training_'+str(amount)+'.txt'
+    for (percent, amount) in amounts:
+        filename = 'training_'+str(percent)+'.txt'
 
         with open(filename, 'w') as f:
             for img, label in training_data[:amount]:
                 f.write(img + "\n")
 
-        createDataFile(data_prefix + '_' + str(amount) + '.data',
+        createDataFile(data_prefix + '_' + str(percent) + '.data',
                 filename, validate_file, label_file, backup_prefix + '_' +
-                str(amount))
+                str(percent))

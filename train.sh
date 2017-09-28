@@ -10,15 +10,10 @@
 #SBATCH --time=3-00:00:00
 #SBATCH --mem=18G
 
-# Seems like we're using about 5.7 GiB of RAM and each training takes about 6
-# hours and 15 minutes. It said we used 567% of 8 CPU's, so probably only need
-# 6 CPUs. More GPUs the better, but I don't want to hog them all.
-
-
 #
 # Learning curve files
 #
-name="grey_table_testing" # we will use the ${name}.cfg file
+name="grey_table" # we will use the ${name}.cfg file
 # .data files, labels, testing.txt, training.txt, etc.
 data="/data/vcea/matt.taylor/Projects/ras-yolo/grey-table"
 # Contains images/ and labels/
@@ -42,8 +37,11 @@ module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0
 
 function clean_up 
 {
-	rmworkspace -a -f --name="$SCRATCHDIR"
-	exit
+    # If we killed it before it copied all the files back, do that now
+    [[ -n "$backup" && -e "$SCRATCHDIR/backup/" ]] && cp -a "$SCRATCHDIR/backup/"* "$backup/"
+
+    rmworkspace -a -f --name="$SCRATCHDIR"
+    exit
 }
 
 #Create a scratch workspace
@@ -57,18 +55,18 @@ echo "SLURM_JOB_GPUS: $SLURM_JOB_GPUS"
 echo "Getting data: started"
 cd "$SCRATCHDIR"
 echo " - dataset"
-cp "$data/$datasetName" .
+cp -a "$data/$datasetName" .
 echo " - darknet"
-cp -r "$data/darknet" .
+cp -ra "$data/darknet" .
 echo " - data"
-cp "$data"/*.txt "$data"/*.data "$data"/*.names "$data"/*.cfg .
+cp -a "$data"/*.txt "$data"/*.data "$data"/*.names "$data"/*.cfg .
 echo " - weights"
-cp "$weights" .
+cp -a "$weights" .
 echo "Getting data: done"
 
 echo "Making sure darknet is built: starting"
 cd darknet
-make
+make -j$SLURM_CPUS_PER_TASK
 cd ..
 echo "Making sure darknet is built: done"
 
@@ -79,25 +77,36 @@ echo "Extracting data: done"
 
 echo "Training network: started"
 for i in *.data; do
+    # Find the remote backup folder
     backup=$(grep backup "$i" | sed 's/backup = //')
 
-    if [[ -e $backup ]]; then
+    # Set it to backup locally for speed
+    sed -i 's/^backup.*$/backup = backup/g' "$i"
+    mkdir -p backup
+
+    if [[ -e "$backup/$name.backup" ]]; then
         if [[ -e "$backup/${name}_final.weights" ]]; then
             # Skip
             echo " - skipping $i since already ran"
         else
             # Continue where we left off
-            echo " - continuing training on $i, backup $backup"
-            /usr/bin/time -v "$darknet" detector train "$i" "$name.cfg" "$backup/$name.backup" -gpus $SLURM_JOB_GPUS
+            echo " - continuing training on $i, starting training"
+            cp -a "$backup/$name.backup" backup/
+            /usr/bin/time -v "$darknet" detector train "$i" "$name.cfg" "backup/$name.backup" -gpus $SLURM_JOB_GPUS
         fi
     else
-        # Make backup directory
+        # Make remote backup directory
         mkdir -p "$backup"
 
         # Train and print out stats about time, processor utilization, etc.
         echo " - training on $i, backup $backup"
         /usr/bin/time -v "$darknet" detector train "$i" "$name.cfg" "$weightsName" -gpus $SLURM_JOB_GPUS
     fi
+
+    # If not empty, copy local backup files to the remote backup folder
+    [[ -n "$(ls -A backup)" ]] && cp -a backup/* "$backup/"
+
+    rm -rf backup
 done
 echo "Training network: done"
 

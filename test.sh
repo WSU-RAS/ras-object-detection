@@ -13,7 +13,7 @@
 #
 # Learning curve files
 #
-name="grey_table_testing" # we will use the ${name}.cfg file
+name="grey_table" # we will use the ${name}.cfg file
 # .data files, labels, testing.txt, training.txt, etc.
 data="/data/vcea/matt.taylor/Projects/ras-yolo/grey-table"
 # Contains images/ and labels/
@@ -32,8 +32,11 @@ module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0
 
 function clean_up 
 {
-	rmworkspace -a -f --name="$SCRATCHDIR"
-	exit
+    # If we killed it before it copied all the files back, do that now
+    [[ -n "$results" && ! -e "$results" && -e "results.txt" ]] && cp -a "results.txt" "${results}.partial"
+
+    rmworkspace -a -f --name="$SCRATCHDIR"
+    exit
 }
 
 #Create a scratch workspace
@@ -47,16 +50,16 @@ echo "SLURM_JOB_GPUS: $SLURM_JOB_GPUS"
 echo "Getting data: started"
 cd "$SCRATCHDIR"
 echo " - dataset"
-cp "$data/$datasetName" .
+cp -a "$data/$datasetName" .
 echo " - darknet"
-cp -r "$data/darknet" .
+cp -ra "$data/darknet" .
 echo " - data"
-cp "$data"/*.txt "$data"/*.data "$data"/*.names "$data"/*.cfg .
+cp -a "$data"/*.txt "$data"/*.data "$data"/*.names "$data"/*.cfg .
 echo "Getting data: done"
 
 echo "Making sure darknet is built: starting"
 cd darknet
-make
+make -j$SLURM_CPUS_PER_TASK
 cd ..
 echo "Making sure darknet is built: done"
 
@@ -67,6 +70,10 @@ echo "Extracting data: done"
 
 echo "Testing network: started"
 mkdir -p "$resultsFolder"
+
+# Modify the config file for testing rather than training
+sed -i 's/^batch=.*$/batch=1/g; s/^subdivisions=.*$/subdivisions=1/g' "$name.cfg"
+
 for i in *.data; do
     amount=${i//[!0-9]/} # just the number in the filename
     backup=$(grep backup "$i" | sed 's/backup = //')
@@ -85,7 +92,7 @@ for i in *.data; do
 
             # Copy the results back
             echo " - copying results to: $results"
-            cp "results.txt" "$results"
+            cp -a "results.txt" "$results"
         fi
     else
         # Skip

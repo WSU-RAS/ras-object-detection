@@ -6,6 +6,7 @@ This is code for training a CNN for object detection for the RAS project using Y
 
     ./split_clean.sh
     ./split.py
+    wc -l $(ls *.txt | sort --version-sort)
 
 ### Copy files over to Kamiak
 
