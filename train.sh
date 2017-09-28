@@ -38,7 +38,10 @@ module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0
 function clean_up 
 {
     # If we killed it before it copied all the files back, do that now
-    [[ -n "$backup" && -e "$SCRATCHDIR/backup/" ]] && cp -a "$SCRATCHDIR"/backup/* "$backup/"
+    if [[ -n "$backup" && -e "$SCRATCHDIR/backup/" ]]; then
+        mkdir -p "$backup"
+        cp -a "$SCRATCHDIR"/backup/* "$backup/"
+    fi
 
     rmworkspace -a -f --name="$SCRATCHDIR"
     exit
