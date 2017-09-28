@@ -83,15 +83,16 @@ def hashfile(filename, blocksize=65536):
 
     return hasher.hexdigest()
 
-def clean(data):
+# From:
+# https://stackoverflow.com/a/2507871/2698494
+def isNotEmpty(filename):
+    return os.stat(filename).st_size > 0
+
+def removeDuplicates(data):
     """
     Remove duplicates in the data
-
-    useLables:
-        if true, will use label files which are smaller than image files
-        if false, will use the image files to find duplicates
     """
-    print("Before clean:", len(data), "examples")
+    print("Before removing duplicates:", len(data), "examples")
 
     duplicates = {}
     cleanData = []
@@ -107,7 +108,23 @@ def clean(data):
             # Not a duplicate, so use this in the test
             cleanData.append((img, label))
 
-    print("After clean:", len(cleanData), "examples")
+    print("After removing duplicates:", len(cleanData), "examples")
+
+    return cleanData
+
+def removeBlank(data):
+    """
+    Remove images with blank label files
+    """
+    print("Before removing blanks:", len(data), "examples")
+
+    cleanData = []
+
+    for img, label in data:
+        if isNotEmpty(label):
+            cleanData.append((img, label))
+
+    print("After removing blanks:", len(cleanData), "examples")
 
     return cleanData
 
@@ -134,7 +151,10 @@ if __name__ == "__main__":
     # Remove duplicates from the testing data
     # Note: skip since it turns out there are none (see with `jdupes .`)
     #print("Removing duplicates")
-    #combined = clean(combined)
+    #combined = removeDuplicates(combined)
+
+    # Remove the data that isn't labeled (label files are blank)
+    combined = removeBlank(combined)
 
     # Shuffle
     random.shuffle(combined)
