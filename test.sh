@@ -72,7 +72,12 @@ echo "Testing network: started"
 mkdir -p "$resultsFolder"
 
 # Modify the config file for testing rather than training
+#
+# Maybe not needed?
 sed -i 's/^batch=.*$/batch=1/g; s/^subdivisions=.*$/subdivisions=1/g' "$name.cfg"
+# "increases the precision and makes it possible to detect small objects"
+# src: https://github.com/AlexeyAB/darknet#how-to-train-to-detect-your-custom-objects
+sed -i 's/^width=.*$/width=608/g; s/^height=.*$/height=608/g' "$name.cfg"
 
 for i in *.data; do
     amount=${i//[!0-9]/} # just the number in the filename
