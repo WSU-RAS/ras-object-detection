@@ -8,7 +8,7 @@
 #SBATCH --gres=gpu:tesla:8
 #SBATCH --partition=taylor
 #SBATCH --time=3-00:00:00
-#SBATCH --mem=18G
+#SBATCH --mem=30G
 
 #
 # Learning curve files
