@@ -70,6 +70,11 @@ def getResultsIterations(folder="results_iterations"):
         for filename in filenames:
             # The number in the filename indicates the number of iterations
             m = iterations_match.match(filename)
+
+            # Skip ones that don't have the number in the filename (e.g. final.txt)
+            if not m:
+                continue
+
             iterations = int(m.groups()[0])
             # The folder number indicates the number of training examples
             m = amount_match.match(dirname)
@@ -100,7 +105,7 @@ def plotLearningCurve(title, y, x, curves, filename, loc=5):
     Curves - data to plot
     loc - place for legend
     """
-    fig, ax = plt.subplots(1,1,figsize=(12, 6)) #,dpi=200)
+    fig, ax = plt.subplots(1,1,figsize=(12, 6),dpi=200)
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     for i, (name, data) in enumerate(curves):
         plt.plot(data[:,0], data[:,1], color=plotColors[i],
@@ -123,9 +128,9 @@ if __name__ == "__main__":
     np.random.seed(0)
 
     # For graphing
-    plotColors = ["r", "b", "g", "m", "y", "k", "c"]
-    plotMarkers = ["s", "*", "x", "d", ".", "o", "v", "^", "<", ">", "1", "2", "3", "4", ]
-    plotLines = ['-', '--', '-.', ':']*2
+    plotColors = ["r", "b", "g", "m", "y", "k", "c"]*10
+    plotMarkers = ["s", "*", "x", "d", ".", "o", "v", "^", "<", ">", "1", "2", "3", "4" ]*5
+    plotLines = ['-', '--', '-.', ':']*10
 
     # Get results
     results = getResults()
@@ -133,18 +138,22 @@ if __name__ == "__main__":
 
     # Plot and save
     if not results.empty:
-        plotLearningCurve("Learning Curve", "Metric (between 0 and 1)", "Number of Training Examples",
+        plotLearningCurve("Learning Curve", "Metric (between 0 and 1)", "Number of Training Examples (%)",
                 [("Average IOU", results[['Amount','Average IOU']].values),
                  ("Recall", results[['Amount','Recall']].values)], "LearningCurve")
 
     if not results_iterations.empty:
         amounts = results_iterations["Amount"].unique()
-        curves = []
+        iou = []
+        recall = []
 
         for amount in amounts:
             subset = results_iterations.loc[results_iterations['Amount'] == amount]
-            curves += [("Average IOU ("+str(amount)+")", subset[['Iterations','Average IOU']].values),
-                       ("Recall ("+str(amount)+")", subset[['Iterations','Recall']].values)]
+            subset = subset.loc[subset['Iterations'] <= 20000]
+            iou += [("Average IOU ("+str(amount)+")", subset[['Iterations','Average IOU']].values)]
+            recall += [("Recall ("+str(amount)+")", subset[['Iterations','Recall']].values)]
 
-        plotLearningCurve("Learning Curve", "Metric (between 0 and 1)", "Number of Iterations",
-                curves, "LearningCurveIterations")
+        plotLearningCurve("Iterations Learning Curve (IOU)", "IOU", "Number of Iterations",
+                iou, "LearningCurveIterations_iou")
+        plotLearningCurve("Iterations Learning Curve (Recall)", "Recall", "Number of Iterations",
+                recall, "LearningCurveIterations_recall")

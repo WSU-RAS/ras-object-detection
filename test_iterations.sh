@@ -89,7 +89,13 @@ for i in *.data; do
 
     if [[ -e "$backup" ]]; then
         for weights in "$backup"/*.weights; do
-            iterations="$(basename "$weights" | sed 's/[^0-9]*//g')"
+            # For the final weights, there isn't a number
+            if [[ "$weights" == "$final" ]]; then
+                iterations="final"
+            else
+                iterations="$(basename "$weights" | sed 's/[^0-9]*//g')"
+            fi
+
             results="$resultsFolder/$amount/$iterations.txt"
 
             if [[ -e "$results" ]]; then
