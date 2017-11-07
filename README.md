@@ -13,7 +13,7 @@ Output a JSON file with all the images and no annotations yet.
 
     ./list_images.sh
 
-Open up Sloth (see my Arch [PKGBUILD](https://github.com/floft/PKGBUILDs/tree/master/python-sloth)) and then start to drawing bouding boxes around objects. Change the config to set the classes.
+Open up Sloth (see my Arch [PKGBUILD](https://github.com/floft/PKGBUILDs/tree/master/python-sloth)) and then start to drawing bounding boxes around objects.
 
     ./annotate.sh
 
@@ -44,6 +44,7 @@ Convert the JSON file to the format YOLO needs.
     make
 
 ### Debugging Darknet
+Example:
 
     pushd ../../darknet; make -j4; popd
     gdb -ex run --args ../../darknet/darknet detector recall dataset_1000.data grey_table_testing.cfg backup_1000/grey_table_testing_final.weights
