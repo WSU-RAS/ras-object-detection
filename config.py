@@ -9,6 +9,7 @@ datasetFolder="datasets/SmartHome"
 datasetLabels="datasets/SmartHome/labels.names"
 datasetConfig="datasets/SmartHome/config.cfg"
 datasetCompressed="datasets/SmartHome/files.tar.gz"
+datasetTF="datasets/SmartHome/files.tf"
 
 # For generating the lists of what data to use for training
 dataPrefix="dataset"

@@ -5,13 +5,15 @@ backup_*
 *.txt
 *.png
 *.jpg
-*.tar.gz
+*.tar.*
 *.json
 *.avi
 *.zip
+*.gz
 *.xz
 *.mp4
 *.bak
+*.tf
 .trackerignore
 .ipynb_checkpoints
 /darknet
