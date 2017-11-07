@@ -1,5 +1,7 @@
 #!/usr/bin/python
 """
+Modified for getting RGB and D images from our robot
+
 Look at:
     https://github.com/PalouseRobosub/vision_dev
 """
@@ -33,8 +35,16 @@ class ImageCreator():
             sys.exit(0)
 
         try:
-            prefix = "left" if "left" in topic else "right" if "right" in topic else "bottom"
-            cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+            prefix = "depth" if "depth" in topic else "rgb" if "rgb" in topic else "other"
+
+            # Hack to get around "[16UC1] ... The conversion does not make sense"
+            # https://gist.github.com/awesomebytes/30bf7eae3a90754f82502accd02cbb12
+            if msg.encoding == "16UC1": # Depth
+                msg.encoding = "mono16"
+                cv_image = self.bridge.imgmsg_to_cv2(msg, "mono8")
+            else: # RGB
+                cv_image = self.bridge.imgmsg_to_cv2(msg, "bgr8")
+
             timestr = "%.6f" % msg.header.stamp.to_sec()
             image_name = str(save_dir) + prefix + "_" + timestr + ".png"
             print ("saving image:" + image_name)
@@ -56,10 +66,10 @@ if __name__ == '__main__':
     rospy.init_node('unbagger_script')
 
     if len(sys.argv) < 2:
-        raise RuntimeError('rosrun my_package bag_to_images.py <save_dir> <filename> (both are relative paths)')
+        raise RuntimeError('python unbagger.py <save_dir>/ <filename>')
     else:
-        save_dir = os.path.join(sys.path[0], sys.argv[1])
-        filename = os.path.join(sys.path[0], sys.argv[2])
+        save_dir = sys.argv[1]
+        filename = sys.argv[2]
         rospy.loginfo("Bag filename = %s", filename)
 
     # Go to class functions that do all the heavy lifting. Do error checking.
