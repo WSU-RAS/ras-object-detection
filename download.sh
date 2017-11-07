@@ -1,7 +1,7 @@
 #!/bin/bash
 # Note both have trailing slashes
-from="kamiak:/data/vcea/matt.taylor/Projects/ras-yolo/grey-table/"
-to="/home/garrett/Documents/School/17_Fall/CASAS/RAS/kamiak/grey_table/"
+from="kamiak:/data/vcea/matt.taylor/Projects/ras-object-detection/"
+to="/home/garrett/Documents/School/17_Fall/CASAS/RAS/ras-object-detection/"
 
 rsync -Pahuv --exclude="old" --exclude="old_v2" --include="*/" \
     --include="*_final.weights" --include="*.backup" --include="*.out*" \

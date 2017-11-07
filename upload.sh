@@ -2,8 +2,8 @@
 echo "Warning: if there's already .data files on Kamiak, it'll run on any not yet run on"
 
 # Note both have trailing slashes
-from="/home/garrett/Documents/School/17_Fall/CASAS/RAS/kamiak/grey_table/"
-to="kamiak:/data/vcea/matt.taylor/Projects/ras-yolo/grey-table/"
+from="/home/garrett/Documents/School/17_Fall/CASAS/RAS/ras-object-detection/"
+to="kamiak:/data/vcea/matt.taylor/Projects/ras-object-detection/"
 
 # Update darknet
 cd darknet

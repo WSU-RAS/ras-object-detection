@@ -15,7 +15,7 @@
 #
 name="grey_table" # we will use the ${name}.cfg file
 # .data files, labels, testing.txt, training.txt, etc.
-data="/data/vcea/matt.taylor/Projects/ras-yolo/grey-table"
+data="/data/vcea/matt.taylor/Projects/ras-object-detection"
 # Contains images/ and labels/
 datasetName="TableDarknetDataset.tar.gz"
 # Darknet executable (in the data folder)
