@@ -51,7 +51,7 @@ def createDataFile(outputFile, train_file, valid_file, label_file, backup_dir):
     train = TableDarknetDataset/training.txt
     valid = TableDarknetDataset/validate.txt
     names = TableDarknetDataset/labels.names
-    backup = /data/vcea/matt.taylor/Projects/ras-yolo/grey-table/train_table_backup
+    backup = /data/vcea/matt.taylor/Projects/ras-object-detection/backup
     eval = wsu
     """
 
@@ -128,18 +128,33 @@ def removeBlank(data):
 
     return cleanData
 
+def labelsToImages(labels):
+    """
+    Replacements to get image filename from labels. This is so that we only use
+    labeled images for training. 
+    """
+    images = []
+
+    for l in labels:
+        images.append(l.replace("labels", "images").replace("txt", "png"))
+
+    return images
+
 if __name__ == "__main__":
-    folder          = "TableDarknetDataset"
-    label_file      = "labels.names"
-    data_prefix     = "dataset"
-    training_prefix = "training"
-    validate_file   = "validate.txt"
-    testing_file    = "testing.txt"
-    backup_prefix   = "/data/vcea/matt.taylor/Projects/ras-yolo/grey-table/backup"
+    import config
+    folder          = config.datasetFolder
+    label_file      = config.datasetLabels
+    data_prefix     = config.dataPrefix
+    training_prefix = config.trainingPrefix
+    validate_file   = config.validateFile
+    testing_file    = config.testingFile
+    backup_prefix   = config.backupPrefix
 
     # Get lists of files in images/ and labels/ folders
-    images = findFiles(os.path.join(folder, "images"))
+    #images = findFiles(os.path.join(folder, "images"))
     labels = findFiles(os.path.join(folder, "labels"))
+    # Get the images we have labels for
+    images = labelsToImages(labels)
 
     # Should go together
     assert len(images) == len(labels), \
@@ -196,7 +211,7 @@ if __name__ == "__main__":
     amounts = [(i, math.floor(i/100*len(training_data))) for i in range(10,110,10)]
 
     for (percent, amount) in amounts:
-        filename = 'training_'+str(percent)+'.txt'
+        filename = training_prefix+'_'+str(percent)+'.txt'
 
         with open(filename, 'w') as f:
             for img, label in training_data[:amount]:

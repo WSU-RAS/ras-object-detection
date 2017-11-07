@@ -118,6 +118,8 @@ def plotLearningCurve(title, y, x, curves, filename, loc=5):
     plt.savefig(filename+".png", bbox_inches='tight', pad_inches=0)
 
 if __name__ == "__main__":
+    import config
+
     # Make them look prettier
     plt.style.use('ggplot')
     #sns.set(style="ticks")
@@ -133,8 +135,8 @@ if __name__ == "__main__":
     plotLines = ['-', '--', '-.', ':']*10
 
     # Get results
-    results = getResults()
-    results_iterations = getResultsIterations()
+    results = getResults(os.path.join(config.datasetFolder, "results"))
+    results_iterations = getResultsIterations(os.path.join(config.datasetFolder, "results_iterations"))
 
     # Plot and save
     if not results.empty:

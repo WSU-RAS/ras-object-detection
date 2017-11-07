@@ -10,23 +10,23 @@
 #SBATCH --time=3-00:00:00
 #SBATCH --mem=30G
 
+. config.py
+
 #
 # Learning curve files
 #
-name="grey_table" # we will use the ${name}.cfg file
+name="$datasetConfigPrefix" # we will use the ${name}.cfg file
 # .data files, labels, testing.txt, training.txt, etc.
-data="/data/vcea/matt.taylor/Projects/ras-object-detection"
+data="$remotedir"
 # Contains images/ and labels/
-datasetName="TableDarknetDataset.tar.gz"
+datasetName="$datasetCompressed"
 # Darknet executable (in the data folder)
 darknet="darknet/darknet"
 
 #
 # Starting weights
 #
-weightsName="darknet19_448.conv.23"
-# Where to copy it from
-weights="/data/vcea/matt.taylor/Projects/ras-yolo/darknet/$weightsName"
+weights="$weightsDir/$weightsName"
 
 #
 # ---
@@ -61,8 +61,8 @@ echo " - dataset"
 cp -a "$data/$datasetName" .
 echo " - darknet"
 cp -ra "$data/darknet" .
-echo " - data"
-cp -a "$data"/*.txt "$data"/*.data "$data"/*.names "$data"/*.cfg .
+echo " - dataset files"
+cp -a "$data"/*.txt "$data"/*.data .
 echo " - weights"
 cp -a "$weights" .
 echo "Getting data: done"
