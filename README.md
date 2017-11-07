@@ -2,11 +2,28 @@ ras-object-detection
 ====================
 This is code for training a CNN for object detection for the RAS project using YOLO on darknet and generating a learning curve. Look in individual code files for more documentation. Below is the general process, though you will have to modify for your particular setup.
 
-First edit `config.py` to set which dataset you wish to work with. Note this is for both Bash and Python.
+### Capturing bag file of images on robot
+Bring everything up on the robot, e.g.:
+
+    roslaunch turtlebot_bringup minimal.launch
+    roslaunch turtlebot_bringup 3dsensor.launch
+    roslaunch turtlebot_teleop keyboard_teleop.launch
+
+To record the camera video:
+
+    rosrun image_view video_recorder image:=/camera/rgb/image_raw _filename:=video1.avi
+
+To record the camera images in a bag file:
+
+    rosbag record /camera/rgb/image_raw /camera/depth/image_raw
 
 ### Unbag the captured footage
 
     python unbagger.py datasets/NewDataset/ data.bag
+
+### Edit config
+
+Edit `config.py` to set which dataset you wish to work with. Note this is for both Bash and Python, so remember to make syntax work for both.
 
 ### Label the images
 Output a JSON file with all the images and no annotations yet.
