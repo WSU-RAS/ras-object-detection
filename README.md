@@ -13,7 +13,7 @@ Output a JSON file with all the images and no annotations yet.
 
     ./list_images.sh
 
-Open up Sloth and then start to drawing bouding boxes around objects. Change the config to set the classes.
+Open up Sloth (see my Arch [PKGBUILD](https://github.com/floft/PKGBUILDs/tree/master/python-sloth)) and then start to drawing bouding boxes around objects. Change the config to set the classes.
 
     ./annotate.sh
 
