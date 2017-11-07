@@ -15,7 +15,8 @@
 #
 # Learning curve files
 #
-name="$datasetConfigPrefix" # we will use the ${name}.cfg file
+config="$datasetConfig"
+name="$dataset" # we will use the ${name}.cfg file
 # .data files, labels, testing.txt, training.txt, etc.
 data="$remotedir"
 # Contains images/ and labels/
@@ -57,6 +58,8 @@ echo " - darknet"
 cp -ra "$data/darknet" .
 echo " - dataset files"
 cp -a "$data"/*.txt "$data"/*.data .
+echo " - config file"
+cp -a "$data/$config" "$name".cfg
 echo "Getting data: done"
 
 echo "Making sure darknet is built: starting"

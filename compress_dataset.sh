@@ -13,7 +13,7 @@ cat images.txt labels.txt > files.txt
 rm images.txt labels.txt
 
 # Copy a few more files
-echo "${datasetConfigPrefix}.cfg" >> files.txt
+echo "${datasetConfig}" >> files.txt
 echo "$datasetLabels" >> files.txt
 
 # Compress it

@@ -18,7 +18,7 @@ cd ..
 # Recursive: https://stackoverflow.com/a/11111793/2698494
 rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
     --include="*.names" --include="*.cfg" --include="*.sh" --include="*.py" \
-    --include="${datasetCompressed}.tar.gz" \
+    --include="datasets" --include="$datasetFolder" --include="$datasetCompressed" \
     --exclude="*" "$from" "$to"
 
 # Copy darknet

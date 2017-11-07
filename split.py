@@ -148,7 +148,7 @@ if __name__ == "__main__":
     training_prefix = config.trainingPrefix
     validate_file   = config.validateFile
     testing_file    = config.testingFile
-    backup_prefix   = config.backupPrefix
+    backup_prefix   = os.path.join(config.remotedir, config.datasetFolder, config.backupPrefix)
 
     # Get lists of files in images/ and labels/ folders
     #images = findFiles(os.path.join(folder, "images"))
