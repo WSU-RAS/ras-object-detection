@@ -73,7 +73,7 @@ echo "Making sure darknet is built: done"
 
 echo "Extracting data: started"
 # Note: only using images/ and labels/ folders, not the other files
-tar xzf "$datasetName"
+tar xzf files.tar.gz
 echo "Extracting data: done"
 
 echo "Testing network: started"

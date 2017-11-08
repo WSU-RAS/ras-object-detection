@@ -13,7 +13,7 @@ backup_*
 *.xz
 *.mp4
 *.bak
-*.tf
+*.record
 .trackerignore
 .ipynb_checkpoints
 /darknet
