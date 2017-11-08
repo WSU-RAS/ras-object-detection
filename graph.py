@@ -17,6 +17,9 @@ import seaborn as sns
 from io import StringIO
 from matplotlib.ticker import MaxNLocator
 
+import config
+
+
 # From: https://stackoverflow.com/a/18603065/2698494
 def getLastLine(filename):
     with open(filename, "rb") as f:
@@ -115,11 +118,10 @@ def plotLearningCurve(title, y, x, curves, filename, loc=5):
     plt.xlabel(x)
     plt.legend(loc=loc)
 
-    plt.savefig(filename+".png", bbox_inches='tight', pad_inches=0)
+    plt.savefig(os.path.join(config.datasetFolder, filename+".png"),
+            bbox_inches='tight', pad_inches=0)
 
 if __name__ == "__main__":
-    import config
-
     # Make them look prettier
     plt.style.use('ggplot')
     #sns.set(style="ticks")
