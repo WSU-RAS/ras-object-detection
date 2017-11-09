@@ -3,7 +3,7 @@ ras-object-detection
 This is code for training a CNN for object detection for the RAS project using YOLO on darknet and a few networks with TensorFlow and generating a learning curve. Look in individual code files for more documentation. Below is the general process, though you will have to modify for your particular setup.
 
 ### Getting code
-Download this repository and then update the TensorFlow models submodule:
+Download this repository and then update the TensorFlow models and Darknet submodule:
 
     git clone https://github.com/floft/ras-object-detection.git
     cd ras-object-detection
