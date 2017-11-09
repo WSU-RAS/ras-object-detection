@@ -1,6 +1,6 @@
 ras-object-detection
 ====================
-This is code for training a CNN for object detection for the RAS project using YOLO on darknet and generating a learning curve. Look in individual code files for more documentation. Below is the general process, though you will have to modify for your particular setup.
+This is code for training a CNN for object detection for the RAS project using YOLO on darknet and a few networks with TensorFlow and generating a learning curve. Look in individual code files for more documentation. Below is the general process, though you will have to modify for your particular setup.
 
 ### Getting code
 Download this repository and then update the TensorFlow models submodule:
@@ -25,6 +25,7 @@ To record the camera images in a bag file:
     rosbag record /camera/rgb/image_raw /camera/depth/image_raw
 
 ### Unbag the captured footage
+Note, to run this script, you need to be running `roscore`.
 
     python unbagger.py datasets/NewDataset/ data.bag
 
@@ -41,9 +42,10 @@ Open up Sloth (see my Arch [PKGBUILD](https://github.com/floft/PKGBUILDs/tree/ma
 
     ./annotate.sh
 
-Convert the JSON file to the format YOLO needs.
+Convert the JSON file to the formats for YOLO and TensorFlow.
 
     ./sloth2yolo.py
+    ./sloth2tf.py
 
 ### Split the data
 

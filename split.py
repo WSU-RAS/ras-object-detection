@@ -1,14 +1,16 @@
 #!/usr/bin/env python3
 """
-You need to have this data:
-  TableDarknetDataset/images
-  TableDarknetDataset/labels
+Generate files for YOLO
+
+You need to have this data (where YourDataSet is specified in the config):
+  datasets/YourDataSet/images
+  datasets/YourDataSet/labels
 
 This script will generate 3 files containing a shuffled subset of the image
 filenames:
-    TableDarknetDataset/training.txt (70% of the images)
-    TableDarknetDataset/validate.txt (10% of the images)
-    TableDarknetDataset/testing.txt  (20% of the images)
+    training.txt (70% of the images)
+    validate.txt (10% of the images)
+    testing.txt  (20% of the images)
 
 Then it generates dataset_100.txt, dataset_200.txt, etc. for each of the
 amounts of training data for the learning curve.
@@ -21,7 +23,7 @@ Note:
    in the filename/path to each image to get the labels, so they must only
    differ by that
  * The testing filename must be testing.txt since it is hard-coded in darknet's
- examples/detector.c validate_detector_recall function.
+   examples/detector.c validate_detector_recall function.
 """
 import os
 import math
@@ -48,10 +50,10 @@ def createDataFile(outputFile, train_file, valid_file, label_file, backup_dir):
     Example output file:
 
     classes = 3
-    train = TableDarknetDataset/training.txt
-    valid = TableDarknetDataset/validate.txt
-    names = TableDarknetDataset/labels.names
-    backup = /data/vcea/matt.taylor/Projects/ras-object-detection/backup
+    train = training.txt
+    valid = validate.txt
+    names = datasets/YourDataSet/labels.names
+    backup = /data/vcea/matt.taylor/Projects/ras-object-detection/datasets/YourDataSet/backup_10
     eval = wsu
     """
 
@@ -115,6 +117,13 @@ def removeDuplicates(data):
 def removeBlank(data):
     """
     Remove images with blank label files
+
+    I think these blank label files is what caused a bunch of NaN's while training.
+
+        "When the annotation data is not correct, by which I mean there exists
+        a training image whose annotation is empty."
+
+        ~ http://guanghan.info/blog/en/my-works/train-yolo/
     """
     print("Before removing blanks:", len(data), "examples")
 
@@ -136,12 +145,14 @@ def labelsToImages(labels):
     images = []
 
     for l in labels:
+        # TODO: don't assume it's PNG; it could be .jpg, for instance
         images.append(l.replace("labels", "images").replace("txt", "png"))
 
     return images
 
 if __name__ == "__main__":
     import config
+
     folder          = config.datasetFolder
     label_file      = config.datasetLabels
     data_prefix     = config.dataPrefix
