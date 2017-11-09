@@ -16,7 +16,6 @@ backup_*
 *.record
 .trackerignore
 .ipynb_checkpoints
-/darknet
 /data
 results
 results_iteratinos
