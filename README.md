@@ -49,17 +49,17 @@ Convert the JSON file to the formats for YOLO and TensorFlow.
 
 ### Split the data
 
-    ./split_clean.sh
-    ./split.py
+    ./yolo_split_clean.sh
+    ./yolo_split.py
     wc -l $(ls *.txt | sort --version-sort)
 
 ### Compress the images we'll train with
 
-    ./compress_dataset.sh
+    ./yolo_compress_dataset.sh
 
 ### Copy files over to Kamiak
 
-    ./upload.sh
+    ./kamiak_upload.sh
 
 ### Compile the modified darknet on Kamiak in an idev session
 
@@ -72,23 +72,23 @@ Convert the JSON file to the formats for YOLO and TensorFlow.
 ### Debugging Darknet
 Example:
 
-    pushd ../../darknet; make -j4; popd
-    gdb -ex run --args ../../darknet/darknet detector recall dataset_1000.data grey_table_testing.cfg backup_1000/grey_table_testing_final.weights
+    pushd darknet; make -j4; popd
+    gdb -ex run --args darknet/darknet detector recall dataset_100.data datasets/SmartHome/config.cfg datasets/SmartHome/backup_100/SmartHome_final.weights
 
 ### Train
 
-    sbatch train.sh
+    sbatch yolo_train.sh
     watch -n 1 squeue -A taylor
-    tail -f train.out train.err
+    tail -f slurm_logs/yolo_train.out slurm_logs/yolo_train.err
 
 ### Test
 
-    sbatch test.sh
+    sbatch yolo_test.sh
     watch -n 1 squeue -A taylor
-    tail -f test.out test.err
+    tail -f slurm_logs/yolo_test.out slurm_logs/yolo_test.err
 
 ### Get results
 
-    ./download.sh
-    tail -n 1 $(find results -name '*.txt' | sort --version-sort)
+    ./kamiak_download.sh
+    tail -n 1 $(find datasets/SmartHome/results -name '*.txt' | sort --version-sort)
     ./graph.py

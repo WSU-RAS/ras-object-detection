@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=Iterations
-#SBATCH --output=test_iterations.out
-#SBATCH --error=test_iterations.err
+#SBATCH --job-name=yolotest
+#SBATCH --output=slurm_logs/yolo_test.out
+#SBATCH --error=slurm_logs/yolo_test.err
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=1
 #SBATCH --nodes=1-1
@@ -24,7 +24,7 @@ datasetName="$datasetCompressed"
 # Darknet executable (in the data folder)
 darknet="darknet/darknet"
 # Where we'll save the results from testing
-resultsFolder="$data/datasets/$dataset/results_iterations"
+resultsFolder="$data/datasets/$dataset/results"
 
 #
 # ---
@@ -36,10 +36,7 @@ module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0
 function clean_up 
 {
     # If we killed it before it copied all the files back, do that now
-    if [[ -n "$results" && ! -e "$results" && -e "results.txt" ]]; then
-        mkdir -p "$resultsFolder/$amount"
-        cp -a "results.txt" "${results}.partial"
-    fi
+    [[ -n "$results" && ! -e "$results" && -e "results.txt" ]] && cp -a "results.txt" "${results}.partial"
 
     rmworkspace -a -f --name="$SCRATCHDIR"
     exit
@@ -91,34 +88,24 @@ for i in *.data; do
     backup=$(grep backup "$i" | sed 's/backup = //')
     final="$backup/${name}_final.weights"
 
-    if [[ -e "$backup" ]]; then
-        for weights in "$backup"/*.weights; do
-            # For the final weights, there isn't a number
-            if [[ "$weights" == "$final" ]]; then
-                iterations="final"
-            else
-                iterations="$(basename "$weights" | sed 's/[^0-9]*//g')"
-            fi
+    if [[ -e "$final" ]]; then
+        results="$resultsFolder/$amount.txt"
 
-            results="$resultsFolder/$amount/$iterations.txt"
+        if [[ -e "$results" ]]; then
+            # Skip
+            echo " - skipping $i, already tested: $results"
+        else
+            # Test these final weights
+            echo " - testing $final"
+            /usr/bin/time -v "$darknet" detector recall "$i" "$name.cfg" "$final" -gpus $SLURM_JOB_GPUS
 
-            if [[ -e "$results" ]]; then
-                # Skip
-                echo " - skipping $i, already tested: $results"
-            else
-                # Test these final weights
-                echo " - testing ${amount}% $iterations iterations"
-                /usr/bin/time -v "$darknet" detector recall "$i" "$name.cfg" "$weights" -gpus $SLURM_JOB_GPUS
-
-                # Copy the results back
-                echo " - copying results to: $results"
-                mkdir -p "$resultsFolder/$amount"
-                cp -a "results.txt" "$results"
-            fi
-        done
+            # Copy the results back
+            echo " - copying results to: $results"
+            cp -a "results.txt" "$results"
+        fi
     else
         # Skip
-        echo " - skipping $i no backup directory $backup"
+        echo " - skipping $i no final weights $final"
     fi
 done
 echo "Testing network: done"

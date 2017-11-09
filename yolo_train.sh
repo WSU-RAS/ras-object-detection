@@ -1,7 +1,7 @@
 #!/bin/bash
-#SBATCH --job-name=Train
-#SBATCH --output=train.out
-#SBATCH --error=train.err
+#SBATCH --job-name=yolotrain
+#SBATCH --output=slurm_logs/yolo_train.out
+#SBATCH --error=slurm_logs/yolo_train.err
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
 #SBATCH --nodes=1-1

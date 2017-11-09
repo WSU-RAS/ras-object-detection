@@ -21,5 +21,9 @@ rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
     --include="datasets" --include="$datasetFolder" --include="$datasetCompressed" \
     --exclude="*" "$from" "$to"
 
-# Copy darknet
+# Copy submodules
 rsync -Pahuv "$from/darknet" "$to"
+rsync -Pahuv "$from/models" "$to"
+
+# Make SLURM log folder
+ssh "$remotessh" "mkdir $remotedir/slurm_logs"
