@@ -61,19 +61,18 @@ Convert the JSON file to the formats needed for YOLO and TensorFlow.
     cd /data/vcea/matt.taylor/Projects/ras-object-detection/darknet
     make
 
-### Train
+### Training and Testing
+Start the train job and then after it has output some weights, you can start
+testing what weights it has output.
 
-    sbatch yolo_train.sh
+    sbatch yolo_train.srun
+    sbatch yolo_test.srun
+    sbatch yolo_test_terations.srun
+
+### Monitor progress
+
     watch -n 1 squeue -A taylor -l
     tail -f slurm_logs/yolo_train.{out,err}
-
-### Test
-
-    sbatch yolo_test.sh
-    tail -f slurm_logs/yolo_test.{out,err}
-
-    sbatch yolo_test_terations.sh
-    tail -f slurm_logs/yolo_test_iterations.{out,err}
 
 ### Get results
 

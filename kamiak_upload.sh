@@ -8,6 +8,7 @@ from="$localdir"
 to="$remotessh:$remotedir"
 
 # Update darknet
+git submodule update
 cd darknet
 git pull
 cd ..
@@ -17,7 +18,8 @@ cd ..
 # One directory: https://stackoverflow.com/a/21830454/2698494
 # Recursive: https://stackoverflow.com/a/11111793/2698494
 rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
-    --include="*.names" --include="*.cfg" --include="*.sh" --include="*.py" \
+    --include="*.names" --include="*.cfg" --include="*.sh" \
+    --include="*.srun" --include="*.py" \
     --include="datasets" --include="$datasetFolder" \
     --include="$datasetCompressed" \
         --include="$datasetTFtrain" \
@@ -27,7 +29,7 @@ rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
 
 # Copy submodules
 rsync -Pahuv "$from/darknet" "$to"
-rsync -Pahuv "$from/models" --exclude="models/research/object_detection/protos/" "$to"
+rsync -Pahuv "$from/models" --exclude="__pycache__" "$to"
 
 # Make SLURM log folder
 ssh "$remotessh" "mkdir -p $remotedir/slurm_logs"
