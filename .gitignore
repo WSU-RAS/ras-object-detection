@@ -1,24 +1,44 @@
-backup_*
-*.out
-*.err
-*.data
-*.txt
+# Dataset
 *.png
 *.jpg
-*.tar.*
+
+# Sloth files
 *.json
+
+# YOLO files
+backup_*
+*.data
+*.txt
+results
+results_iterations
+
+# SLURM log files
+*.out
+*.err
+
+# TensorFlow files
+*.record
+*.ckpt*
+
+# TensorFlow - these are generated with tf_gen_config.sh
+tf.config
+*.pbtxt
+
+# Python files
+__pycache__
+.ipynb_checkpoints
+
+# Videos
+*.mp4
 *.avi
+*.list
+
+# Binary files
 *.zip
 *.gz
 *.xz
-*.mp4
+*.tar.*
+
+# Other random stuff
 *.bak
-*.record
-*.list
 .trackerignore
-.ipynb_checkpoints
-/data
-results
-results_iteratinos
-/old/
-__pycache__

@@ -97,12 +97,23 @@ def tfRecord(folder, labels, output, data):
             tf_example = create_tf_example(labels, filename, annotations)
             writer.write(tf_example.SerializeToString())
 
+def tfLabels(labels, output):
+    with open(output, 'w') as f:
+        for i, label in enumerate(labels):
+            f.write('item {\n'+
+                    '  id: '+str(i)+'\n'+
+                    '  name: \''+label+'\'\n'+
+                    '}\n')
+
 def main(_):
     # Get JSON data
     dataset = config.dataset
     folder = config.datasetFolder
     data = getJson(os.path.join(folder, "sloth.json"))
     labels = uniqueClasses(data)
+
+    # Save labels
+    tfLabels(labels, config.datasetTFlabels)
 
     # Split into 70%, 10%, and 20%
     training_data, validate_data, testing_data = splitJsonData(data)

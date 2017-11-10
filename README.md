@@ -48,6 +48,16 @@ Convert the JSON file to the formats needed for YOLO and TensorFlow.
     ./yolo_compress_dataset.sh
 
     ./sloth2tf.py
+    ./tf_gen_config.sh
+ 
+### Getting starting weights
+
+For YOLO, [download](https://pjreddie.com/media/files/darknet19_448.conv.23)
+and put where you specified in the config file.
+
+For TensorFlow,
+[download](http://storage.googleapis.com/download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_11_06_2017.tar.gz),
+extract the model.ckpt files into *datasets/YourDataSet/*.
 
 ### Copy files over to Kamiak
 

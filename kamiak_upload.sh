@@ -19,12 +19,14 @@ cd ..
 # Recursive: https://stackoverflow.com/a/11111793/2698494
 rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
     --include="*.names" --include="*.cfg" --include="*.sh" \
-    --include="*.srun" --include="*.py" \
+    --include="*.config" --include="*.srun" --include="*.py" \
     --include="datasets" --include="$datasetFolder" \
     --include="$datasetCompressed" \
+        --include="model.ckpt.*" \
         --include="$datasetTFtrain" \
         --include="$datasetTFvalid" \
         --include="$datasetTFtest" \
+        --include="$datasetTFlabels" \
     --exclude="*" "$from" "$to"
 
 # Copy submodules

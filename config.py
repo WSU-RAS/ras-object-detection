@@ -12,6 +12,7 @@ datasetFolder="datasets/SmartHome"
 datasetTFtrain="datasets/SmartHome/tftrain.record"
 datasetTFtest="datasets/SmartHome/tftest.record"
 datasetTFvalid="datasets/SmartHome/tfvalid.record"
+datasetTFlabels="datasets/SmartHome/tf_label_map.pbtxt"
 
 # Files for YOLO
 datasetLabels="datasets/SmartHome/labels.names"
