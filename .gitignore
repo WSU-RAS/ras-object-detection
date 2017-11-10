@@ -19,6 +19,7 @@ results_iterations
 # TensorFlow files
 *.record
 *.ckpt*
+tflogs
 
 # TensorFlow - these are generated with tf_gen_config.sh
 tf.config

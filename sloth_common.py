@@ -50,10 +50,10 @@ def mapLabel(labels, label):
     """
     Convert the given label to an integer based on where it is in the labels array
     
-    E.g.: mapLabel(['a', 'b', 'c', 'd'], 'c') # returns 2
+    E.g.: mapLabel(['a', 'b', 'c', 'd'], 'c') # returns 2+1 = 3
     """
     assert label in labels, "Label must be in the list of labels"
-    return labels.index(label)
+    return labels.index(label)+1
 
 def getSize(filename):
     """

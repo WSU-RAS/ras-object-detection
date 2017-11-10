@@ -9,10 +9,14 @@ dataset="SmartHome"
 datasetFolder="datasets/SmartHome"
 
 # Files for TensorFlow
+datasetTFconfig="datasets/SmartHome/tf.config"
 datasetTFtrain="datasets/SmartHome/tftrain.record"
 datasetTFtest="datasets/SmartHome/tftest.record"
 datasetTFvalid="datasets/SmartHome/tfvalid.record"
 datasetTFlabels="datasets/SmartHome/tf_label_map.pbtxt"
+# Log files during training for TensorBoard
+datasetTFtrainlogs="datasets/SmartHome/tflogs/train"
+datasetTFevallogs="datasets/SmartHome/tflogs/eval"
 
 # Files for YOLO
 datasetLabels="datasets/SmartHome/labels.names"

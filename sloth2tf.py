@@ -101,7 +101,7 @@ def tfLabels(labels, output):
     with open(output, 'w') as f:
         for i, label in enumerate(labels):
             f.write('item {\n'+
-                    '  id: '+str(i)+'\n'+
+                    '  id: '+str(i+1)+'\n'+
                     '  name: \''+label+'\'\n'+
                     '}\n')
 
