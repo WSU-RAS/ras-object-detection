@@ -36,66 +36,35 @@
 LABELS = (
     {
         'attributes': {
-            'class':      'watercan',
+            'type': 'rect',
+            'class':      'marker',
         },
         'inserter': 'sloth.items.RectItemInserter',
-        'item':     'sloth.items.RectItem',
-        'hotkey':   'w',
-        'text':     'Watering Can',
+        'item':     'items.items.LabeledRectItem',
+        'hotkey':   'm',
+        'text':     'Marker',
     },
+
     {
         'attributes': {
-            'class':      'umbrella',
+            'type': 'rect',
+            'class':      'toothbrush',
         },
         'inserter': 'sloth.items.RectItemInserter',
-        'item':     'sloth.items.RectItem',
-        'hotkey':   'u',
-        'text':     'Umbrella',
+        'item':     'items.items.LabeledRectItem',
+        'hotkey':   't',
+        'text':     'Toothbrush',
     },
+
     {
         'attributes': {
-            'class':      'plant',
-        },
-        'inserter': 'sloth.items.RectItemInserter',
-        'item':     'sloth.items.RectItem',
-        'hotkey':   'p',
-        'text':     'Plant',
-    },
-    {
-        'attributes': {
-            'class':      'keys',
-        },
-        'inserter': 'sloth.items.RectItemInserter',
-        'item':     'sloth.items.RectItem',
-        'hotkey':   'k',
-        'text':     'Keys',
-    },
-    {
-        'attributes': {
+            'type': 'rect',
             'class':      'pillbottle',
         },
         'inserter': 'sloth.items.RectItemInserter',
-        'item':     'sloth.items.RectItem',
-        'hotkey':   'b',
-        'text':     'Pill Bottle',
-    },
-    {
-        'attributes': {
-            'class':      'food',
-        },
-        'inserter': 'sloth.items.RectItemInserter',
-        'item':     'sloth.items.RectItem',
-        'hotkey':   'f',
-        'text':     'Food',
-    },
-    {
-        'attributes': {
-            'class':      'glass',
-        },
-        'inserter': 'sloth.items.RectItemInserter',
-        'item':     'sloth.items.RectItem',
-        'hotkey':   'g',
-        'text':     'Glass',
+        'item':     'items.items.LabeledRectItem',
+        'hotkey':   'p',
+        'text':     'PillBottle',
     },
 )
 
@@ -131,7 +100,7 @@ HOTKEYS = (
                    lambda lt: lt.gotoNext(),
                    lambda lt: lt.mainWindow().copyAnnotations.copy()
                   ],                                         'Mark image as labeled/confirmed and go to next then copy all annotations from the previous image.'),
-    ('F5',        lambda lt: toggleShowLabels(), 'Toggle showing labels on boxes'),
+    #('F5',        lambda lt: toggleShowLabels(), 'Toggle showing labels on boxes'),
 )
 
 # CONTAINERS
@@ -147,7 +116,6 @@ CONTAINERS = (
     ('*.yaml',       'sloth.annotations.container.YamlContainer'),
     ('*.pickle',     'sloth.annotations.container.PickleContainer'),
     ('*.sloth-init', 'sloth.annotations.container.FileNameListContainer'),
-    #('*.darknet',    'annotation_containers.darknet.DarknetContainer'),
 )
 
 # PLUGINS

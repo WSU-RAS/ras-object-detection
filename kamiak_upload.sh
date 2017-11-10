@@ -18,12 +18,16 @@ cd ..
 # Recursive: https://stackoverflow.com/a/11111793/2698494
 rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
     --include="*.names" --include="*.cfg" --include="*.sh" --include="*.py" \
-    --include="datasets" --include="$datasetFolder" --include="$datasetCompressed" \
+    --include="datasets" --include="$datasetFolder" \
+    --include="$datasetCompressed" \
+        --include="$datasetTFtrain" \
+        --include="$datasetTFvalid" \
+        --include="$datasetTFtest" \
     --exclude="*" "$from" "$to"
 
 # Copy submodules
 rsync -Pahuv "$from/darknet" "$to"
-rsync -Pahuv "$from/models" "$to"
+rsync -Pahuv "$from/models" --exclude="models/research/object_detection/protos/" "$to"
 
 # Make SLURM log folder
-ssh "$remotessh" "mkdir $remotedir/slurm_logs"
+ssh "$remotessh" "mkdir -p $remotedir/slurm_logs"

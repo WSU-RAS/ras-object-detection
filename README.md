@@ -42,20 +42,12 @@ Open up Sloth (see my Arch [PKGBUILD](https://github.com/floft/PKGBUILDs/tree/ma
 
     ./annotate.sh
 
-Convert the JSON file to the formats for YOLO and TensorFlow.
+Convert the JSON file to the formats needed for YOLO and TensorFlow.
 
     ./sloth2yolo.py
-    ./sloth2tf.py
-
-### Split the data
-
-    ./yolo_split_clean.sh
-    ./yolo_split.py
-    wc -l $(ls *.txt | sort --version-sort)
-
-### Compress the images we'll train with
-
     ./yolo_compress_dataset.sh
+
+    ./sloth2tf.py
 
 ### Copy files over to Kamiak
 
@@ -69,26 +61,21 @@ Convert the JSON file to the formats for YOLO and TensorFlow.
     cd /data/vcea/matt.taylor/Projects/ras-object-detection/darknet
     make
 
-### Debugging Darknet
-Example:
-
-    pushd darknet; make -j4; popd
-    gdb -ex run --args darknet/darknet detector recall dataset_100.data datasets/SmartHome/config.cfg datasets/SmartHome/backup_100/SmartHome_final.weights
-
 ### Train
 
     sbatch yolo_train.sh
-    watch -n 1 squeue -A taylor
-    tail -f slurm_logs/yolo_train.out slurm_logs/yolo_train.err
+    watch -n 1 squeue -A taylor -l
+    tail -f slurm_logs/yolo_train.{out,err}
 
 ### Test
 
     sbatch yolo_test.sh
-    watch -n 1 squeue -A taylor
-    tail -f slurm_logs/yolo_test.out slurm_logs/yolo_test.err
+    tail -f slurm_logs/yolo_test.{out,err}
+
+    sbatch yolo_test_terations.sh
+    tail -f slurm_logs/yolo_test_iterations.{out,err}
 
 ### Get results
 
     ./kamiak_download.sh
-    tail -n 1 $(find datasets/SmartHome/results -name '*.txt' | sort --version-sort)
     ./graph.py

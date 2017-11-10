@@ -2,9 +2,12 @@
 Common functions for sloth2tf.py and sloth2yolo.py to get data from the Sloth
 JSON file.
 """
+import os
 import json
+import math
 import struct
 import imghdr
+import random
 
 def getJson(file):
     """
@@ -14,6 +17,18 @@ def getJson(file):
         data = json.load(f)
     
     return data
+
+def findFiles(folder):
+    """
+    Find all files recursively in specified folder
+    """
+    files = []
+
+    for dirname, dirnames, filenames in os.walk(folder):
+        for filename in filenames:
+            files.append(os.path.join(dirname, filename))
+
+    return files
 
 def uniqueClasses(data):
     """
@@ -76,3 +91,23 @@ def getSize(filename):
         else:
             return
         return width, height
+
+def splitData(data, trainPercent, validPercent):
+    """
+    Shuffle and then split the data into, e.g. 70% training, 10% validation,
+    20% (remaining) testing.
+    """
+    # Shuffle
+    random.shuffle(data)
+
+    # Calculate indices
+    training_end = math.floor(trainPercent*len(data))
+    validate_end = training_end + math.floor(validPercent*len(data))
+    #testing_end  = remaining amount
+
+    # Split
+    training_data = data[:training_end]
+    validate_data = data[training_end:validate_end]
+    testing_data  = data[validate_end:]
+
+    return training_data, validate_data, testing_data

@@ -9,7 +9,9 @@ datasetFolder="datasets/SmartHome"
 datasetLabels="datasets/SmartHome/labels.names"
 datasetConfig="datasets/SmartHome/config.cfg"
 datasetCompressed="datasets/SmartHome/files.tar.gz"
-datasetTF="datasets/SmartHome/files.record"
+datasetTFtrain="datasets/SmartHome/tftrain.record"
+datasetTFtest="datasets/SmartHome/tftest.record"
+datasetTFvalid="datasets/SmartHome/tfvalid.record"
 
 # For generating the lists of what data to use for training
 dataPrefix="dataset"
