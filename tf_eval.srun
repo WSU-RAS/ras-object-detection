@@ -17,7 +17,8 @@
 #
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0 anaconda3
+module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0 python3
+data="$remotedir"
 
 function clean_up 
 {
@@ -65,7 +66,7 @@ echo "Evaluating network: started"
 mkdir -p "$data/$datasetTFevallogs" # log dir, rsync this to view with TensorBoard
 cd models/research
 export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
-python object_detection/eval.py \
+python3 object_detection/eval.py \
     --checkpoint_dir="$data/$datasetTFtrainlogs" \
     --eval_dir="$data/$datasetTFevallogs" \
     --pipeline_config_path="../../$datasetTFconfig"
