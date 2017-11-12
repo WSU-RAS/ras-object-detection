@@ -108,7 +108,7 @@ for i in *.data; do
             else
                 # Test these final weights
                 echo " - testing ${amount}% $iterations iterations"
-                /usr/bin/time -v "$darknet" detector recall "$i" "$name.cfg" "$weights" -gpus $SLURM_JOB_GPUS
+                "$darknet" detector recall "$i" "$name.cfg" "$weights" -gpus $SLURM_JOB_GPUS
 
                 # Copy the results back
                 echo " - copying results to: $results"
