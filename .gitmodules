@@ -4,4 +4,11 @@
 	ignore = dirty
 [submodule "darknet"]
 	path = darknet
-	url = https://github.com/floft/darknet.git
+	#url = https://github.com/floft/darknet.git
+	url = git@github.com:floft/darknet.git
+	ignore = dirty
+[submodule "squeezeDet"]
+	path = squeezeDet
+	#url = https://github.com/floft/squeezeDet.git
+	url = git@github.com:floft/squeezeDet.git
+	ignore = dirty
