@@ -12,6 +12,9 @@ backup_*
 results
 results_iterations
 
+# squeezeDet files
+labels.names
+
 # SLURM log files
 *.out
 *.err
