@@ -11,7 +11,13 @@ to="$localdir"
 
 # TensorFlow logs
 while true; do
-    rsync -Pahuv --exclude="model.ckpt*" "$from/$datasetTFtrainlogs" "$to/$datasetTFtrainlogs"
-    rsync -Pahuv --exclude="model.ckpt*" "$from/$datasetTFevallogs" "$to/$datasetTFevallogs"
+    # * Exclude the large model files
+    # * --inplace so we don't get "file created after file even though it's
+    #   lexicographically earlier" in TensorBoard, which basically makes it
+    #   never update without restarting TensorBoard
+
+    rsync -Pahuv --inplace --exclude="model.ckpt*" "$from/$datasetTFtrainlogs" "$to/$datasetTFtrainlogs"
+    rsync -Pahuv --inplace --exclude="model.ckpt*" "$from/$datasetTFevallogs" "$to/$datasetTFevallogs"
+
     sleep 30
 done
