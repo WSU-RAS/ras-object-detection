@@ -1,6 +1,7 @@
 [submodule "models"]
 	path = models
-	url = https://github.com/tensorflow/models.git
+    #url = https://github.com/tensorflow/models.git
+	url = git@github.com:floft/models.git
 	ignore = dirty
 [submodule "darknet"]
 	path = darknet
