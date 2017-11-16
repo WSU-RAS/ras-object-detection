@@ -46,13 +46,15 @@ cp -a "$data/$datasetTFtrain" \
       "$data/$datasetTFtest" \
       "$data/$datasetTFlabels" \
       "$data/$datasetTFconfig" \
+      "$data/$datasetFolder"/model.ckpt* \
       "$datasetFolder"
 
 echo " - TF models"
 cp -ra "$data/models" .
-cd models/research/
-protoc object_detection/protos/*.proto --python_out=.
-cd "$SCRATCHDIR"
+# Note: must run protoc before doing this then since it's not on Kamiak
+#cd models/research/
+#protoc object_detection/protos/*.proto --python_out=.
+#cd "$SCRATCHDIR"
 
 echo " - code"
 echo "Getting data: done"

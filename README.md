@@ -59,6 +59,11 @@ For TensorFlow,
 [download](http://storage.googleapis.com/download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_11_06_2017.tar.gz),
 extract the model.ckpt files into *datasets/YourDataSet/*.
 
+Before uploading to Kamiak, since *protoc* is not installed, make sure you run:
+
+    cd models/research
+    protoc object_detection/protos/*.proto --python_out=.
+
 ### Copy files over to Kamiak
 
     ./kamiak_upload.sh
@@ -79,12 +84,22 @@ testing what weights it has output.
     sbatch yolo_test.srun
     sbatch yolo_test_terations.srun
 
+    sbatch tf_train.srun
+    sbatch tf_eval.srun
+
 ### Monitor progress
+YOLO:
 
     watch -n 1 squeue -A taylor -l
     tail -f slurm_logs/yolo_train.{out,err}
 
-### Get results
+Get YOLO results:
 
     ./kamiak_download.sh
     ./graph.py
+
+TensorFlow:
+
+    ./kamiak_tflogs.sh # Sync TF log directory every 30 seconds
+     tensorboard  --logdir datasets/SmartHome/tf/train
+     tensorboard  --logdir datasets/SmartHome/tf/eval
