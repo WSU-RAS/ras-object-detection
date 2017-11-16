@@ -11,6 +11,7 @@ to="$localdir"
 
 # TensorFlow logs
 while true; do
-    rsync -Pahuv "$from/datasets/$dataset/tf/" "$to/datasets/$dataset/tf/"
+    rsync -Pahuv --exclude="model.ckpt*" "$from/$datasetTFtrainlogs" "$to/$datasetTFtrainlogs"
+    rsync -Pahuv --exclude="model.ckpt*" "$from/$datasetTFevallogs" "$to/$datasetTFevallogs"
     sleep 30
 done

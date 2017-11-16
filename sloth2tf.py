@@ -24,6 +24,14 @@ def loadImage(filename):
 
     return encoded
 
+def bounds(x):
+    """
+    TensorFlow errors if we have a value less than 0 or more than 1. This
+    occurs if in Sloth you draw a bounding box slightly out of the image. We'll
+    just cut the bounding box at the edges of the images.
+    """
+    return max(min(x, 1), 0)
+
 def create_tf_example(labels, filename, annotations, debug=False):
     """
     Based on:
@@ -49,10 +57,16 @@ def create_tf_example(labels, filename, annotations, debug=False):
         classes_text.append(a['class'].encode())
 
         # Scaled min/maxes
-        xmins.append(a['x']/width)
-        ymins.append(a['y']/height)
-        xmaxs.append((a['x']+a['width'])/width)
-        ymaxs.append((a['y']+a['height'])/height)
+        xmins.append(bounds(a['x']/width))
+        ymins.append(bounds(a['y']/height))
+        xmaxs.append(bounds((a['x']+a['width'])/width))
+        ymaxs.append(bounds((a['y']+a['height'])/height))
+
+        # We got errors: maximum box coordinate value is larger than 1.010000
+        valid = lambda x: x >= 0 and x <= 1
+        assert valid(xmins[-1]) and valid(ymins[-1]) and valid(xmaxs[-1]) and valid(ymaxs[-1]), \
+                "Invalid values for "+filename+": "+ \
+                str(xmins[-1])+","+str(ymins[-1])+","+str(xmaxs[-1])+","+str(ymaxs[-1])
 
     tf_example = tf.train.Example(features=tf.train.Features(feature={
         'image/height': dataset_util.int64_feature(height),
