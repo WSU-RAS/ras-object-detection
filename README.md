@@ -101,5 +101,4 @@ Get YOLO results:
 TensorFlow:
 
     ./kamiak_tflogs.sh # Sync TF log directory every 30 seconds
-     tensorboard  --logdir datasets/SmartHome/tflogs/train
-     tensorboard  --logdir datasets/SmartHome/tflogs/eval
+     tensorboard  --logdir datasets/SmartHome/tflogs

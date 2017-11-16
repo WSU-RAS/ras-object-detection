@@ -1,7 +1,7 @@
 #!/bin/bash
 #
 # Download the TF logs every once in a while to keep TensorBoard updated
-# Then run: tensorboard  --logdir datasets/SmartHome/tflogs/train/
+# Then run: tensorboard  --logdir datasets/SmartHome/tflogs
 #
 . config.py
 

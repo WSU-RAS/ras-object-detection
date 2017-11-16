@@ -10,8 +10,9 @@ rsync -Pahuv --exclude="old" --exclude="old_v2" --include="*/" \
     --include="*_final.weights" --include="*.backup" --include="*.out*" \
     --include="*.err*" --exclude="*" "$from" "$to"
 
-# TensorFlow logs
-rsync -Pahuv "$from/datasets/$dataset/tf/" "$to/datasets/$dataset/tf/"
+# TensorFlow checkpoints and logs
+rsync -Pahuv "$from/$datasetTFtrainlogs" "$to/$datasetTFtrainlogs"
+rsync -Pahuv "$from/$datasetTFevallogs" "$to/$datasetTFevallogs"
 
 # YOLO test results
 rsync -Pahuv "$from/datasets/$dataset/results/" "$to/datasets/$dataset/results/"
