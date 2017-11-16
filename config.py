@@ -32,6 +32,7 @@ weightsName="darknet19_448.conv.23"
 weightsDir="/data/vcea/matt.taylor/Projects/ras-object-detection/"
 
 # Connecting to the remote server
+# Note: this is rsync, so make sure all paths have a trailing slash
 remotedir="/data/vcea/matt.taylor/Projects/ras-object-detection/"
 remotessh="kamiak"
 localdir="/home/garrett/Documents/School/17_Fall/CASAS/RAS/ras-object-detection/"

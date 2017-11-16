@@ -7,7 +7,7 @@
 #SBATCH --nodes=1-1
 #SBATCH --gres=gpu:tesla:4
 #SBATCH --partition=kamiak
-#SBATCH --time=0-02:00:00
+#SBATCH --time=0-04:00:00
 #SBATCH --mem=30G
 
 . config.py

@@ -16,8 +16,8 @@ while true; do
     #   lexicographically earlier" in TensorBoard, which basically makes it
     #   never update without restarting TensorBoard
 
-    rsync -Pahuv --inplace --exclude="model.ckpt*" "$from/$datasetTFtrainlogs" "$to/$datasetTFtrainlogs"
-    rsync -Pahuv --inplace --exclude="model.ckpt*" "$from/$datasetTFevallogs" "$to/$datasetTFevallogs"
+    rsync -Pahuv --inplace --exclude="model.ckpt*" "$from/$datasetTFtrainlogs/" "$to/$datasetTFtrainlogs/"
+    rsync -Pahuv --inplace --exclude="model.ckpt*" "$from/$datasetTFevallogs/" "$to/$datasetTFevallogs/"
 
     sleep 30
 done
