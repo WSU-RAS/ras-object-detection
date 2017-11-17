@@ -17,7 +17,7 @@
 #
 
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
-module load git/2.6.3 gcc/5.2.0 cuda/8.0.44 cudnn/5.1_cuda8.0 python3
+module load cuda/8.0.44 cudnn/6.0_cuda8.0 python3/3.5.0
 data="$remotedir"
 
 function clean_up 
@@ -48,20 +48,12 @@ cp -a "$data/$datasetTFtrain" \
       "$data/$datasetTFconfig" \
       "$data/$datasetFolder"/model.ckpt* \
       "$datasetFolder"
-
 echo " - TF models"
 cp -ra "$data/models" .
-# Note: must run protoc before doing this then since it's not on Kamiak
-#cd models/research/
-#protoc object_detection/protos/*.proto --python_out=.
-#cd "$SCRATCHDIR"
-
-echo " - code"
 echo "Getting data: done"
 
 echo "Making sure TensorFlow installed: starting"
-# Tensorflow 1.3 from pip requires cuDNN 6 but we only have 5.1, so use TF 1.2.1
-pip install --user tensorflow-gpu==1.2.1 pillow lxml jupyter matplotlib
+pip install --user tensorflow-gpu pillow lxml jupyter matplotlib
 echo "Making sure TensorFlow installed: done"
 
 echo "Evaluating network: started"

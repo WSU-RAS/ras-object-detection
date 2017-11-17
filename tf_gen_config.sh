@@ -4,6 +4,7 @@
 # and the number of classes we have
 #
 . config.py
+maxEvals=10
 
 cp models/research/object_detection/samples/configs/faster_rcnn_resnet101_pets.config \
     "$datasetTFconfig"
@@ -15,6 +16,7 @@ classes="$(grep "item" "$datasetTFlabels" | wc -l)"
 # models/research/
 sed -ri "
 s#num_classes: [0-9]+#num_classes: $classes#g
+s#max_evals: [0-9]+#max_evals: $maxEvals#g
 s#PATH_TO_BE_CONFIGURED/pet_label_map.pbtxt#../../$datasetTFlabels#g
 s#PATH_TO_BE_CONFIGURED/pet_train.record#../../$datasetTFtrain#g
 s#PATH_TO_BE_CONFIGURED/pet_val.record#../../$datasetTFvalid#g
