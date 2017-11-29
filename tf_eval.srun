@@ -46,7 +46,7 @@ cp -a "$data/$datasetTFtrain" \
       "$data/$datasetTFtest" \
       "$data/$datasetTFlabels" \
       "$data/$datasetTFconfig" \
-      "$data/$datasetFolder"/model.ckpt* \
+      "$data/$datasetFolder/${TFArch}"_model.ckpt* \
       "$datasetFolder"
 echo " - TF models"
 cp -ra "$data/models" .
