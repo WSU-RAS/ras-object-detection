@@ -11,8 +11,8 @@ rsync -Pahuv --exclude="old" --exclude="old_v2" --include="*/" \
     --include="*.err*" --exclude="*" "$from" "$to"
 
 # TensorFlow checkpoints and logs
-rsync -Pahuv "$from/$datasetTFtrainlogs/" "$to/$datasetTFtrainlogs/"
-rsync -Pahuv "$from/$datasetTFevallogs/" "$to/$datasetTFevallogs/"
+rsync -Pahuv "$from/${datasetTFtrainlogs}_$TFArch/" "$to/${datasetTFtrainlogs}_$TFArch/"
+rsync -Pahuv "$from/${datasetTFevallogs}_$TFArch/" "$to/${datasetTFevallogs}_$TFArch/"
 
 # YOLO test results
 rsync -Pahuv "$from/datasets/$dataset/results/" "$to/datasets/$dataset/results/"

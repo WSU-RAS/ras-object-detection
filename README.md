@@ -56,8 +56,19 @@ For YOLO, [download](https://pjreddie.com/media/files/darknet19_448.conv.23)
 and put where you specified in the config file.
 
 For TensorFlow,
-[download](http://storage.googleapis.com/download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_11_06_2017.tar.gz),
-extract the model.ckpt files into *datasets/YourDataSet/*.
+[download Faster RCNN](http://storage.googleapis.com/download.tensorflow.org/models/object_detection/faster_rcnn_resnet101_coco_11_06_2017.tar.gz),
+extract the model.ckpt.\* files into *datasets/YourDataSet/*. Prepend each
+filename with `faster_rcnn_resnet101_`.
+
+For TensorFlow,
+[download RFCN](http://download.tensorflow.org/models/object_detection/rfcn_resnet101_coco_2017_11_08.tar.gz),
+extract the model.ckpt.\* files into *datasets/YourDataSet/*. Prepend each
+filename with `rfcn_resnet101_`.
+
+For TensorFlow,
+[download SSD](http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz),
+extract the model.ckpt.\* files into *datasets/YourDataSet/*. Prepend each
+filename with `ssd_mobilenet_v1_`.
 
 Before uploading to Kamiak, since *protoc* is not installed, make sure you run:
 

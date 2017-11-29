@@ -57,12 +57,12 @@ pip install --user tensorflow-gpu pillow lxml jupyter matplotlib
 echo "Making sure TensorFlow installed: done"
 
 echo "Evaluating network: started"
-mkdir -p "$data/$datasetTFevallogs" # log dir, rsync this to view with TensorBoard
+mkdir -p "$data/${datasetTFevallogs}_$TFArch" # log dir, rsync this to view with TensorBoard
 cd models/research
 export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
 python3 object_detection/eval.py \
-    --checkpoint_dir="$data/$datasetTFtrainlogs" \
-    --eval_dir="$data/$datasetTFevallogs" \
+    --checkpoint_dir="$data/${datasetTFtrainlogs}_$TFArch" \
+    --eval_dir="$data/${datasetTFevallogs}_$TFArch" \
     --pipeline_config_path="../../$datasetTFconfig"
 echo "Evaluating network: done"
 

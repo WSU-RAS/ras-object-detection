@@ -23,8 +23,8 @@ labels.names
 *.record
 *.ckpt*
 tflogs
-train/
-eval/
+train_*/
+eval_*/
 
 # TensorFlow - these are generated with tf_gen_config.sh
 tf.config
