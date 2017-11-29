@@ -22,7 +22,7 @@ rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
     --include="*.config" --include="*.srun" --include="*.py" \
     --include="datasets" --include="$datasetFolder" \
     --include="$datasetCompressed" \
-        --include="model.ckpt.*" \
+        --include="*model.ckpt.*" \
         --include="$datasetTFtrain" \
         --include="$datasetTFvalid" \
         --include="$datasetTFtest" \
