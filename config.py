@@ -17,6 +17,8 @@ datasetTFlabels="datasets/SmartHome/tf_label_map.pbtxt"
 # Log files during training for TensorBoard
 datasetTFtrainlogs="datasets/SmartHome/tflogs/train"
 datasetTFevallogs="datasets/SmartHome/tflogs/eval"
+# For evaluation
+maxTFEvals=30
 # Which network to use (config is based on copying this sample)
 TFArch="rfcn_resnet101"
 #TFArch="ssd_mobilenet_v1"
