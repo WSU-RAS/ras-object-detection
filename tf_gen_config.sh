@@ -17,7 +17,6 @@ classes="$(grep "item" "$datasetTFlabels" | wc -l)"
 sed -ri "
 s#num_classes: [0-9]+#num_classes: $classes#g
 s#num_examples: [0-9]+#num_examples: $maxExamples#g
-s#max_evals: [0-9]+#max_evals: $maxTFEvals#g
 s#PATH_TO_BE_CONFIGURED/model.ckpt#PATH_TO_BE_CONFIGURED/${TFArch}_model.ckpt#g
 s#PATH_TO_BE_CONFIGURED/pet_label_map.pbtxt#../../$datasetTFlabels#g
 s#PATH_TO_BE_CONFIGURED/pet_train.record#../../$datasetTFtrain#g
@@ -27,3 +26,10 @@ s#PATH_TO_BE_CONFIGURED/mscoco_train.record#../../$datasetTFtrain#g
 s#PATH_TO_BE_CONFIGURED/mscoco_val.record#../../$datasetTFvalid#g
 s#PATH_TO_BE_CONFIGURED#../../$datasetFolder#g
 " "$datasetTFconfig"
+
+# if maxTFEvals = 0, then don't set a limit
+if [[ $maxTFEvals == 0 ]]; then
+    sed -ri "s#max_evals: [0-9]+##g" "$datasetTFconfig"
+else
+    sed -ri "s#max_evals: [0-9]+#max_evals: $maxTFEvals#g" "$datasetTFconfig"
+fi

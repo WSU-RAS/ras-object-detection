@@ -17,11 +17,11 @@ datasetTFlabels="datasets/SmartHome/tf_label_map.pbtxt"
 # Log files during training for TensorBoard
 datasetTFtrainlogs="datasets/SmartHome/tflogs/train"
 datasetTFevallogs="datasets/SmartHome/tflogs/eval"
-# For evaluation
-maxTFEvals=30
+# For evaluation, 0 means forever (until job ends)
+maxTFEvals=0
 # Which network to use (config is based on copying this sample)
-TFArch="rfcn_resnet101"
-#TFArch="ssd_mobilenet_v1"
+#TFArch="rfcn_resnet101"
+TFArch="ssd_mobilenet_v1"
 #TFArch="faster_rcnn_resnet101"
 
 # Files for YOLO
