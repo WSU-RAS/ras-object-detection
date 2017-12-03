@@ -66,9 +66,14 @@ extract the model.ckpt.\* files into *datasets/YourDataSet/*. Prepend each
 filename with `rfcn_resnet101_`.
 
 For TensorFlow,
-[download SSD](http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz),
+[download SSD MobileNet](http://download.tensorflow.org/models/object_detection/ssd_mobilenet_v1_coco_2017_11_17.tar.gz),
 extract the model.ckpt.\* files into *datasets/YourDataSet/*. Prepend each
 filename with `ssd_mobilenet_v1_`.
+
+For TensorFlow,
+[download SSD Inception](http://download.tensorflow.org/models/object_detection/ssd_inception_v2_coco_2017_11_17.tar.gz),
+extract the model.ckpt.\* files into *datasets/YourDataSet/*. Prepend each
+filename with `ssd_inception_v2_`.
 
 Before uploading to Kamiak, since *protoc* is not installed, make sure you run:
 

@@ -21,7 +21,8 @@ datasetTFevallogs="datasets/SmartHome/tflogs/eval"
 maxTFEvals=0
 # Which network to use (config is based on copying this sample)
 #TFArch="rfcn_resnet101"
-TFArch="ssd_mobilenet_v1"
+#TFArch="ssd_mobilenet_v1"
+TFArch="ssd_inception_v2"
 #TFArch="faster_rcnn_resnet101"
 
 # Files for YOLO
