@@ -1,0 +1,43 @@
+#!/bin/bash
+#SBATCH --job-name=tfexport
+#SBATCH --output=slurm_logs/tf_export.out
+#SBATCH --error=slurm_logs/tf_export.err
+#SBATCH --ntasks=1
+#SBATCH --cpus-per-task=8
+#SBATCH --nodes=1-1
+#SBATCH --gres=gpu:tesla:2
+#SBATCH --partition=taylor
+#SBATCH --time=0-00:30:00
+#SBATCH --mem=30G
+
+. config.py
+
+#
+# ---
+#
+
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
+module load cuda/8.0.44 cudnn/6.0_cuda8.0 python3/3.5.0
+data="$remotedir"
+
+echo "Making sure TensorFlow installed: starting"
+pip install --user tensorflow-gpu pillow lxml jupyter matplotlib
+echo "Making sure TensorFlow installed: done"
+
+# Get the last checkpoint prefix, e.g.
+# path/to/tflogs/train/ssd_inception_v2/model.ckpt-200000
+lastCheckpoint="$(ls "$data/$datasetTFtrainlogs/$TFArch/"model.ckpt-* | \
+    sort | tail -n 1 | sed -r 's#\.[^\.]+$##g')"
+outputDir="$data/$datasetFolder/${TFArch}.pb"
+echo "Last checkpoint: $lastCheckpoint"
+echo "Saving to: $outputDir"
+
+echo "Exporting network: started"
+cd models/research
+export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
+python3 object_detection/export_inference_graph.py \
+    --input_type image_tensor \
+    --pipeline_config_path="$data/$datasetTFconfig" \
+    --trained_checkpoint_prefix="$lastCheckpoint" \
+    --output_directory="$outputDir"
+echo "Exporting network: done"

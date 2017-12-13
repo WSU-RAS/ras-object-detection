@@ -19,7 +19,8 @@ datasetTFtrainlogs="datasets/SmartHome/tflogs/train"
 datasetTFevallogs="datasets/SmartHome/tflogs/eval"
 # For evaluation, 0 means forever (until job ends)
 maxTFEvals=0
-# Which network to use (config is based on copying this sample)
+# Which network to use (config is based on copying this sample), note that whenever
+# you change this, you need to run ./tf_gen_config.sh again.
 #TFArch="rfcn_resnet101"
 #TFArch="ssd_mobilenet_v1"
 TFArch="ssd_inception_v2"

@@ -108,7 +108,7 @@ def plotLearningCurve(title, y, x, curves, filename, loc=5):
     Curves - data to plot
     loc - place for legend
     """
-    fig, ax = plt.subplots(1,1,figsize=(12, 6),dpi=200)
+    fig, ax = plt.subplots(1,1,figsize=(8, 5),dpi=200)
     ax.xaxis.set_major_locator(MaxNLocator(integer=True))
     for i, (name, data) in enumerate(curves):
         plt.plot(data[:,0], data[:,1], color=plotColors[i],
@@ -118,21 +118,22 @@ def plotLearningCurve(title, y, x, curves, filename, loc=5):
     plt.xlabel(x)
     plt.legend(loc=loc)
 
-    plt.savefig(os.path.join(config.datasetFolder, filename+".png"),
-            bbox_inches='tight', pad_inches=0)
+    plt.savefig(os.path.join(config.datasetFolder, filename+".pdf"),
+            bbox_inches='tight', pad_inches=0, transparent=True)
 
 if __name__ == "__main__":
     # Make them look prettier
-    plt.style.use('ggplot')
+    #plt.style.use('ggplot')
     #sns.set(style="ticks")
-    sns.set_style("whitegrid")
+    #sns.set_style("whitegrid")
 
     # For reproducibility
     random.seed(0)
     np.random.seed(0)
 
     # For graphing
-    plotColors = ["r", "b", "g", "m", "y", "k", "c"]*10
+    #plotColors = ["r", "b", "g", "m", "y", "k", "c"]*10
+    plotColors = sns.color_palette()
     plotMarkers = ["s", "*", "x", "d", ".", "o", "v", "^", "<", ">", "1", "2", "3", "4" ]*5
     plotLines = ['-', '--', '-.', ':']*10
 
@@ -142,7 +143,7 @@ if __name__ == "__main__":
 
     # Plot and save
     if not results.empty:
-        plotLearningCurve("Learning Curve", "Metric (between 0 and 1)", "Number of Training Examples (%)",
+        plotLearningCurve("Learning Curve", "Value", "Number of Training Examples (%)",
                 [("Average IOU", results[['Amount','Average IOU']].values),
                  ("Recall", results[['Amount','Recall']].values)], "LearningCurve")
 

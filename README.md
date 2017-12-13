@@ -103,6 +103,10 @@ testing what weights it has output.
     sbatch tf_train.srun
     sbatch tf_eval.srun
 
+After you're done training with TensorFlow, you can export the network:
+
+    sbatch tf_export.srun
+
 ### Monitor progress
 YOLO:
 

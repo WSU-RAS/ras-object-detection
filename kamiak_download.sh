@@ -7,12 +7,15 @@ to="$localdir"
 
 # YOLO backup files and weights, SLURM output files
 rsync -Pahuv --exclude="old" --exclude="old_v2" --include="*/" \
-    --include="*_final.weights" --include="*.backup" --include="*.out*" \
+    --include="backup_100/*_final.weights" --include="*.out*" \
     --include="*.err*" --exclude="*" "$from" "$to"
 
 # TensorFlow checkpoints and logs
-rsync -Pahuv "$from/${datasetTFtrainlogs}_$TFArch/" "$to/${datasetTFtrainlogs}_$TFArch/"
-rsync -Pahuv "$from/${datasetTFevallogs}_$TFArch/" "$to/${datasetTFevallogs}_$TFArch/"
+rsync -Pahuv --exclude="model.ckpt*" "$from/${datasetTFtrainlogs}/$TFArch/" "$to/${datasetTFtrainlogs}/$TFArch/"
+rsync -Pahuv --exclude="model.ckpt*" "$from/${datasetTFevallogs}/$TFArch/" "$to/${datasetTFevallogs}/$TFArch/"
+
+# TensorFlow exported models
+rsync -Pahuv --include="*.pb/***" --exclude="*" "$from/$datasetFolder/" "$to/$datasetFolder/"
 
 # YOLO test results
 rsync -Pahuv "$from/datasets/$dataset/results/" "$to/datasets/$dataset/results/"
