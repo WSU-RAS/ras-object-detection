@@ -32,8 +32,7 @@ from object_detection.utils import visualization_utils as vis_util
 
 def load_image_into_numpy_array(image):
     """
-    Helper function from:
-    models/research/object_detection/
+    Helper function from: models/research/object_detection/
     """
     (im_width, im_height) = image.size
     return np.array(image.getdata()).reshape((im_height, im_width, 3)).astype(np.uint8)
@@ -45,15 +44,16 @@ class ObjectDetector:
     Based on:
     https://github.com/tensorflow/models/blob/master/research/object_detection/object_detection_tutorial.ipynb
 
-    with ObjectDetectorTF("path/to/model_dir.pb", "path/to/tf_label_map.pbtxt") as detector:
-        boxes, scores, classes = detector.process(newImage)
+
+    Usage:
+        with ObjectDetectorTF("path/to/model_dir.pb", "path/to/tf_label_map.pbtxt") as detector:
+            boxes, scores, classes = detector.process(newImage)
 
     Or:
-
-    detector = ObjectDetectorTF("path/to/model_dir.pb", "path/to/tf_label_map.pbtxt")
-    detector.open()
-    boxes, scores, classes = detector.process(newImage)
-    detector.close()
+        detector = ObjectDetectorTF("path/to/model_dir.pb", "path/to/tf_label_map.pbtxt")
+        detector.open()
+        boxes, scores, classes = detector.process(newImage)
+        detector.close()
     """
     def __init__(self, graph_path, labels_path, threshold):
 	# Threshold for what to count as objects
@@ -176,6 +176,10 @@ class ObjectDetectorNode:
 
     Alternate, uses different message format:
     https://github.com/osrf/tensorflow_object_detector
+
+    Usage:
+    with ObjectDetectorNode() as node:
+        rospy.spin()
     """
     def __init__(self):
         # Parameters
@@ -270,7 +274,7 @@ def test(model, root="../networks"):
 if __name__ == '__main__':
     try:
         with ObjectDetectorNode() as node:
-            pass
+            rospy.spin()
     except rospy.ROSInterruptException:
         pass
 

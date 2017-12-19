@@ -121,3 +121,33 @@ TensorFlow:
 
     ./kamiak_tflogs.sh # Sync TF log directory every 30 seconds
      tensorboard  --logdir datasets/SmartHome/tflogs
+
+### Running on ROS
+Since I'm using Python 3:
+
+    sudo apt-get install python3-empy # Errors building messages without this
+    sudo -H pip3 install catkin_pkg # Provides rospy for Python 3
+
+Create Catkin workspace: 
+
+    mkdir ~/catkin_ws
+    cd ~/catkin_ws
+    mkdir src
+
+Put the *ras-object-detection* repo in *~/catkin_ws/src/*.
+
+Build everything:
+
+    catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
+    echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
+    source ~/.bashrc
+
+Run the Object Detector after editing the *params.yaml* file:
+
+    roslaunch ObjectDetector ObjectDetector.launch
+
+Or:
+
+    rosrun ObjectDetector ObjectDetector \
+        _graph_path:=path/ssd_mobilenet_v1.pb \
+        _labels_path:=path/labels.pbtxt
