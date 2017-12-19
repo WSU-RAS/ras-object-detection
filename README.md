@@ -143,30 +143,30 @@ For the AC power adapter, we used a 12 VDC power supply we had sitting around.
 
 Installing JetPack:
 
-    * Install Ubuntu 16.04 in a VM and give it enough ram, maybe 4-6 GiB
-      ([src](https://devtalk.nvidia.com/default/topic/988616/jetpack-2-3-1-flash-problems-/?offset=7))
-    * Enable USB3 in VirtualBox (even though the Jetson is only USB2, if you
-      only have USB2 you get a "BootRom is not running" error,
-      [src](https://devtalk.nvidia.com/default/topic/1002827/jetson-tx2/problem-flashing-tx-2/2))
-    * Run JetPack installer and install everything on the host.
-    * When it gets to the point to install to the Jetson, you'll have to put it
-      into the Force Recovery mode (unplug power, plug power, hold in on
-      RECOVERY, press Reset, let up on Recovery after 2 seconds). Then NVIDIA
-      CORP device shows up in "lsusb." In VirtualBox, under USB (bottom right
-      corner) check that for the VM. Press Enter in the VM to say to install.
-      Then it'll say it doesn't find the USB device. Check the NVIDIA CORP
-      again. Then it'll install.
-    * After copying over the filesystem, it'll error that it can't find the IP.
-      Then you can quit the installer. Plug the Jetson into your host computer
-      ethernet (so you can get IP from Wireshark) and share your connection or
-      into a router you can get the Jetson IP from. Then run the installer
-      again but make sure to select "no action" to install the OS when
-      re-running. Then when it gets to installing other software, e.g. CUDA,
-      it'll ask for the IP, user, and pass. Specify the IP and then "nvidia"
-      for both username and password.
-      ([src](https://devtalk.nvidia.com/default/topic/1002081/jetson-tx2/jetpack-3-0-install-with-a-vm/))
-    * Note: after it's all done, to shut down VirtualBox, you probably have to
-      uncheck the USB device.
+* Install Ubuntu 16.04 in a VM and give it enough ram, maybe 4-6 GiB
+  ([src](https://devtalk.nvidia.com/default/topic/988616/jetpack-2-3-1-flash-problems-/?offset=7))
+* Enable USB3 in VirtualBox (even though the Jetson is only USB2, if you
+  only have USB2 you get a "BootRom is not running" error,
+  [src](https://devtalk.nvidia.com/default/topic/1002827/jetson-tx2/problem-flashing-tx-2/2))
+* Run JetPack installer and install everything on the host.
+* When it gets to the point to install to the Jetson, you'll have to put it
+  into the Force Recovery mode (unplug power, plug power, hold in on
+  RECOVERY, press Reset, let up on Recovery after 2 seconds). Then NVIDIA
+  CORP device shows up in "lsusb." In VirtualBox, under USB (bottom right
+  corner) check that for the VM. Press Enter in the VM to say to install.
+  Then it'll say it doesn't find the USB device. Check the NVIDIA CORP
+  again. Then it'll install.
+* After copying over the filesystem, it'll error that it can't find the IP.
+  Then you can quit the installer. Plug the Jetson into your host computer
+  ethernet (so you can get IP from Wireshark) and share your connection or
+  into a router you can get the Jetson IP from. Then run the installer
+  again but make sure to select "no action" to install the OS when
+  re-running. Then when it gets to installing other software, e.g. CUDA,
+  it'll ask for the IP, user, and pass. Specify the IP and then "nvidia"
+  for both username and password.
+  ([src](https://devtalk.nvidia.com/default/topic/1002081/jetson-tx2/jetpack-3-0-install-with-a-vm/))
+* Note: after it's all done, to shut down VirtualBox, you probably have to
+  uncheck the USB device.
 
 Allow LLMNR so we can resolve "tegra-ubuntu" hostname to SSH into it:
 
