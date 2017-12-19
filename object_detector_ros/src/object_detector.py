@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 """
 Object Detector
 
@@ -19,10 +19,10 @@ from PIL import Image
 from matplotlib import pyplot as plt
 
 # ROS
+import cv2
 import rospy
-from std_msgs.msg import Floats
 from sensor_msgs.msg import Image
-import cv_bridge import CvBridge, CvBridgeError
+from cv_bridge import CvBridge, CvBridgeError
 # From: https://github.com/ipa320/cob_perception_common in cob_perception_msgs
 from cob_perception_msgs.msg import Detection, DetectionArray, Rect
 
@@ -56,8 +56,8 @@ class ObjectDetector:
         detector.close()
     """
     def __init__(self, graph_path, labels_path, threshold):
-	# Threshold for what to count as objects
-	self.threshold = threshold
+        # Threshold for what to count as objects
+        self.threshold = threshold
 
         # Load frozen TensorFlow model into memory
         self.detection_graph = tf.Graph()
@@ -65,7 +65,7 @@ class ObjectDetector:
         with self.detection_graph.as_default():
             od_graph_def = tf.GraphDef()
 
-            with tf.gfile.GFile(os.path.join(graph_path, "frozen_inference_graph.pb", 'rb') as fid:
+            with tf.gfile.GFile(os.path.join(graph_path, "frozen_inference_graph.pb"), 'rb') as fid:
                 serialized_graph = fid.read()
                 od_graph_def.ParseFromString(serialized_graph)
                 tf.import_graph_def(od_graph_def, name='')
@@ -133,38 +133,38 @@ class ObjectDetector:
         plt.show()
 
     def msg(self, image, boxes, scores, classes):
-	"""
-	Create the Object Detector message to publish with ROS
+        """
+        Create the Object Detector message to publish with ROS
 
         From:
-	https://github.com/cagbal/cob_people_object_detection_tensorflow/blob/master/src/cob_people_object_detection_tensorflow/utils.py
-	"""
+        https://github.com/cagbal/cob_people_object_detection_tensorflow/blob/master/src/cob_people_object_detection_tensorflow/utils.py
+        """
 
-	msg = DetectionArray()
-	msg.header = image.header
-	scores_above_threshold = np.where(scores > self.threshold)[1]
+        msg = DetectionArray()
+        msg.header = image.header
+        scores_above_threshold = np.where(scores > self.threshold)[1]
 
-	for s in scores_above_threshold:
-	    # Get the properties
-	    bb = boxes[0,s,:]
-	    sc = scores[0,s]
-	    cl = classes[0,s]
+        for s in scores_above_threshold:
+            # Get the properties
+            bb = boxes[0,s,:]
+            sc = scores[0,s]
+            cl = classes[0,s]
 
-	    # Create the detection message
-	    detection = Detection()
-	    detection.header = image.header
-	    detection.label = self.category_index[int(cl)]['name']
-	    detection.id = cl
-	    detection.score = sc
-	    detection.detector = 'Tensorflow object detector'
-	    detection.mask.roi.x = int((image.width-1) * bb[1])
-	    detection.mask.roi.y = int((image.height-1) * bb[0])
-	    detection.mask.roi.width = int((image.width-1) * (bb[3]-bb[1]))
-	    detection.mask.roi.height = int((image.height-1) * (bb[2]-bb[0]))
+            # Create the detection message
+            detection = Detection()
+            detection.header = image.header
+            detection.label = self.category_index[int(cl)]['name']
+            detection.id = cl
+            detection.score = sc
+            detection.detector = 'Tensorflow object detector'
+            detection.mask.roi.x = int((image.width-1) * bb[1])
+            detection.mask.roi.y = int((image.height-1) * bb[0])
+            detection.mask.roi.width = int((image.width-1) * (bb[3]-bb[1]))
+            detection.mask.roi.height = int((image.height-1) * (bb[2]-bb[0]))
 
-	    msg.detections.append(detection)
+            msg.detections.append(detection)
 
-	return msg
+        return msg
 
 class ObjectDetectorNode:
     """
@@ -182,22 +182,18 @@ class ObjectDetectorNode:
         rospy.spin()
     """
     def __init__(self):
+        rospy.init_node('object_detector', anonymous=True)
+
         # Parameters
         graph_path = os.path.expanduser(rospy.get_param("~graph_path"))
         labels_path = os.path.expanduser(rospy.get_param("~labels_path"))
         threshold = rospy.get_param("~threshold", 0.5)
         camera_namespace = rospy.get_param("~camera_namespace", "/camera/rgb/image_raw")
 
-        rospy.loginfo("graph_path=%s", graph_path)
-        rospy.loginfo("labels_path=%s", labels_path)
-        rospy.loginfo("threshold=%s", threshold)
-        rospy.loginfo("camera_namespace=%s", camera_namespace)
-
         # Object Detector
         self.detector = ObjectDetector(graph_path, labels_path, threshold)
 
         # ROS Node
-        rospy.init_node('object_detector', anonymous=True)
         self.pub = rospy.Publisher('object_detector', DetectionArray, queue_size=1)
         self.sub = rospy.Subscriber(camera_namespace, Image, self.rgb_callback, queue_size=1, buff_size=2**24)
 

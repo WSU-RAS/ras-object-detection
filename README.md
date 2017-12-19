@@ -144,10 +144,4 @@ Build everything:
 
 Run the Object Detector after editing the *params.yaml* file:
 
-    roslaunch ObjectDetector ObjectDetector.launch
-
-Or:
-
-    rosrun ObjectDetector ObjectDetector \
-        _graph_path:=path/ssd_mobilenet_v1.pb \
-        _labels_path:=path/labels.pbtxt
+    roslaunch object_detector_ros object_detector.launch
