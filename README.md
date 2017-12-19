@@ -313,3 +313,15 @@ Build everything:
 Run the Object Detector after editing the *params.yaml* file:
 
     roslaunch object_detector_ros object_detector.launch
+
+If you wish to set the clocks and GPU to full speed, then run (
+[src](https://devtalk.nvidia.com/default/topic/1018081/jetson-tx2/tensorflow-mobilenet-object-detection-model-in-tx2-is-very-slow-/post/5185487/),
+[nvpmodel number reference](http://www.jetsonhacks.com/2017/03/25/nvpmodel-nvidia-jetson-tx2-development-kit/)):
+
+    sudo nvpmodel -m 0 # Maybe?
+    sudo ~/jetson_clocks.sh
+
+To check that they're running as fast as possible, check that @1300 is at the
+end of the lines printed:
+
+    sudo ~/jetson_clocks.sh --show
