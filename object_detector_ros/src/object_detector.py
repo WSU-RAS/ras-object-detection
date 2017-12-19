@@ -13,6 +13,7 @@ import os
 import time
 import numpy as np
 import tensorflow as tf
+from collections import deque
 
  # Visualization for debugging
 from PIL import Image
@@ -114,6 +115,9 @@ class ObjectDetector:
                 self.detection_classes, self.num_detections],
             feed_dict={self.image_tensor: image_np_expanded})
 
+        # Class label needs to be int32 or else publishing gives error
+        classes = classes.astype(np.int32)
+
         return boxes, scores, classes
         
     def show(self, image_np, boxes, classes, scores, debug_image_size=(12,8)):
@@ -138,7 +142,6 @@ class ObjectDetector:
         From:
         https://github.com/cagbal/cob_people_object_detection_tensorflow/blob/master/src/cob_people_object_detection_tensorflow/utils.py
         """
-
         msg = DetectionArray()
         msg.header = image.header
         scores_above_threshold = np.where(scores > self.threshold)[1]
@@ -180,7 +183,11 @@ class ObjectDetectorNode:
     with ObjectDetectorNode() as node:
         rospy.spin()
     """
-    def __init__(self):
+    def __init__(self, averageFPS=60):
+        # We'll publish the results
+        self.pub = rospy.Publisher('object_detector', DetectionArray, queue_size=10)
+
+        # Name this node
         rospy.init_node('object_detector', anonymous=True)
 
         # Parameters
@@ -191,35 +198,48 @@ class ObjectDetectorNode:
 
         # Object Detector
         self.detector = ObjectDetector(graph_path, labels_path, threshold)
-
-        # ROS Node
-        self.pub = rospy.Publisher('object_detector', DetectionArray, queue_size=1)
-        self.sub = rospy.Subscriber(camera_namespace, Image, self.rgb_callback, queue_size=1, buff_size=2**24)
+        self.detector.open()
 
         # For processing images
         self.bridge = CvBridge()
 
+        # For computing average FPS over so many frames
+        self.fps = deque(maxlen=averageFPS)
+
+        # Only create the subscriber after we're done loading everything
+        self.sub = rospy.Subscriber(camera_namespace, Image, self.rgb_callback, queue_size=1, buff_size=2**24)
+
     def __enter__(self):
-        self.detector.open()
+        pass
 
     def __exit__(self, type, value, traceback):
         self.detector.close()
 
-    def rgb_callback(self, data):
-        try:
-            print("Object Detection frame at %s" % rospy.get_time())
-            fps = time.time()
+    def avgFPS(self):
+        """
+        Return average FPS over last so many frames (specified in constructor)
+        """
+        return sum(list(self.fps))/len(self.fps)
 
+    def rgb_callback(self, data):
+        #print("Object Detection frame at %s" % rospy.get_time())
+        fps = time.time()
+        error = ""
+
+        try:
             image_np = self.bridge.imgmsg_to_cv2(data, "bgr8")
             boxes, scores, classes = self.detector.process(image_np)
             self.pub.publish(self.detector.msg(data, boxes, scores, classes))
-
-            # Print FPS
-            fps = 1/(time.time() - fps)
-            print("Object Detection FPS", fps)
-
         except CvBridgeError as e:
             rospy.logerr(e)
+            error = "(error)"
+
+        # Print FPS
+        fps = 1/(time.time() - fps)
+        self.fps.append(fps)
+        print("Object Detection FPS", "{:<5}".format("%.2f"%fps),
+                "Average", "{:<5}".format("%.2f"%self.avgFPS()),
+                error)
 
 def findFiles(folder, prefix="rgb", extension=".png"):
     """

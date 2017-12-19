@@ -316,6 +316,15 @@ Run the Object Detector after editing the *params.yaml* file:
 
     roslaunch object_detector_ros object_detector.launch
 
+Or, run components individually:
+
+    roscore
+    rosrun object_detector_ros object_detector.py \
+        _graph_path:=~/networks/ssd_mobilenet_v1.pb \
+        _labels_path:=~/networks/tf_label_map.pbtxt
+    rosrun image_view image_view image:=/camera/rgb/image_raw
+    rostopic echo /object_detector
+
 If you wish to set the clocks and GPU to full speed, then run
 ([src](https://devtalk.nvidia.com/default/topic/1018081/jetson-tx2/tensorflow-mobilenet-object-detection-model-in-tx2-is-very-slow-/post/5185487/),
 [nvpmodel number reference](http://www.jetsonhacks.com/2017/03/25/nvpmodel-nvidia-jetson-tx2-development-kit/)):
