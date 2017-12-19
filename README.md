@@ -5,9 +5,8 @@ This is code for training a CNN for object detection for the RAS project using Y
 ### Getting code
 Download this repository and then update the TensorFlow models and Darknet submodule:
 
-    git clone https://github.com/floft/ras-object-detection.git
+    git clone --recursive https://github.com/floft/ras-object-detection.git
     cd ras-object-detection
-    git submodule update
 
 ### Capturing bag file of images on robot
 Bring everything up on the robot, e.g.:
