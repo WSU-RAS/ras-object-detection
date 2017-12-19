@@ -19,7 +19,6 @@ from PIL import Image
 from matplotlib import pyplot as plt
 
 # ROS
-import cv2
 import rospy
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
@@ -78,7 +77,7 @@ class ObjectDetector:
                         max_num_classes=numClasses, use_display_name=True)
         self.category_index = label_map_util.create_category_index(categories)
 
-    def open():
+    def open(self):
         # Session
         self.session = tf.Session(graph=self.detection_graph)
 
@@ -95,7 +94,7 @@ class ObjectDetector:
         self.detection_classes = self.detection_graph.get_tensor_by_name('detection_classes:0')
         self.num_detections = self.detection_graph.get_tensor_by_name('num_detections:0')
 
-    def close():
+    def close(self):
         self.session.close()
 
     def __enter__(self):
