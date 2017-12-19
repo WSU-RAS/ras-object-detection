@@ -50,5 +50,6 @@ __pycache__
 *.tar.*
 
 # Other random stuff
+*~
 *.bak
 .trackerignore
