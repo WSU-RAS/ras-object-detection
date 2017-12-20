@@ -303,19 +303,48 @@ installed:
 
     echo 'export PYTHONPATH="/usr/local/lib/python3.5/dist-packages:$PYTHONPATH"' >> ~/.bashrc
 
-For working with YOLO:
-
-    cd ~/catkin_ws/src
-    git clone --recursive https://github.com/floft/darknet_ros.git
-
 Build everything:
 
     cd ~/catkin_ws
-    catkin_make -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
+    catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
     catkin_make install
 
     echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
     source ~/.bashrc
+
+### YOLO Setup
+For working with YOLO:
+
+    cd ~/catkin_ws/src
+    git clone --recursive https://github.com/floft/darknet_ros.git
+    cd ..
+    catkin_make -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
+
+Copy the final weights over for YOLO into the *darknet_ros* directory:
+
+    scp path/to/ras-object-detection/datasets/SmartHome/backup_100/SmartHome_final.weights \
+        jetson:catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights/SmartHome.weights
+    scp path/to/ras-object-detection/datasets/SmartHome/config.cfg \
+        jetson:catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/
+    scp path/to/ras-object-detection/dataset_100.data \
+        jetson:catkin_ws/src/darknet_ros/darknet_ros/config/
+
+Create *~/catkin_ws/src/darknet_ros/darknet_ros/config/SmartHome.yaml*. Then
+change "yolo-voc.yaml" to "SmartHome.yaml" in
+*~/catkin_ws/src/darknet_ros/darknet_ros/config/ros.yaml*.
+
+    yolo_model:
+        config_file:
+            name: SmartHome.cfg
+        weight_file:
+            name: SmartHome.weights
+        threshold:
+            value: 0.3
+        detection_classes:
+            names:
+            -  marker
+            -  toothbrush
+            -  pillbottle
 
 ### Running
 
