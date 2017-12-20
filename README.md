@@ -303,10 +303,15 @@ installed:
 
     echo 'export PYTHONPATH="/usr/local/lib/python3.5/dist-packages:$PYTHONPATH"' >> ~/.bashrc
 
+For working with YOLO:
+
+    cd ~/catkin_ws/src
+    git clone --recursive https://github.com/floft/darknet_ros.git
+
 Build everything:
 
     cd ~/catkin_ws
-    catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
+    catkin_make -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
     catkin_make install
 
     echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
