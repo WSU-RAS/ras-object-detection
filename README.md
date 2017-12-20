@@ -325,13 +325,14 @@ Copy the final weights over for YOLO into the *darknet_ros* directory:
     scp path/to/ras-object-detection/datasets/SmartHome/backup_100/SmartHome_final.weights \
         jetson:catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/weights/SmartHome.weights
     scp path/to/ras-object-detection/datasets/SmartHome/config.cfg \
-        jetson:catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/
+        jetson:catkin_ws/src/darknet_ros/darknet_ros/yolo_network_config/cfg/SmartHome.cfg
     scp path/to/ras-object-detection/dataset_100.data \
         jetson:catkin_ws/src/darknet_ros/darknet_ros/config/
 
-Create *~/catkin_ws/src/darknet_ros/darknet_ros/config/SmartHome.yaml*. Then
-change "yolo-voc.yaml" to "SmartHome.yaml" in
-*~/catkin_ws/src/darknet_ros/darknet_ros/config/ros.yaml*.
+Create *~/catkin_ws/src/darknet_ros/darknet_ros/config/SmartHome.yaml*,
+changing the classes accordingly. Make sure the spaces/tabs are correct or else
+it'll error parsing the file. Then change "yolo\_voc.yaml" to "SmartHome.yaml"
+in *~/catkin_ws/src/darknet_ros/darknet_ros/launch/darknet_ros.launch*.
 
     yolo_model:
         config_file:
@@ -342,11 +343,35 @@ change "yolo-voc.yaml" to "SmartHome.yaml" in
             value: 0.3
         detection_classes:
             names:
-            -  marker
-            -  toothbrush
-            -  pillbottle
+              -  food
+              -  glass
+              -  keys
+              -  pillbottle
+              -  plant
+              -  umbrella
+              -  watercan
 
 ### Running
+
+#### Speed
+
+If you wish to set the clocks and GPU to full speed, then run
+([src](https://devtalk.nvidia.com/default/topic/1018081/jetson-tx2/tensorflow-mobilenet-object-detection-model-in-tx2-is-very-slow-/post/5185487/),
+[nvpmodel number reference](http://www.jetsonhacks.com/2017/03/25/nvpmodel-nvidia-jetson-tx2-development-kit/)):
+
+    sudo nvpmodel -m 0 # Maybe?
+    sudo ~/jetson_clocks.sh
+
+To check that they're running as fast as possible, check that @1300 is at the
+end of the lines printed:
+
+    sudo ~/jetson_clocks.sh --show
+
+#### Running YOLO
+
+    roslaunch darknet_ros darknet_ros.launch
+
+#### Running TensorFlow:
 
 Run the Object Detector after editing the *params.yaml* file:
 
@@ -360,15 +385,3 @@ Or, run components individually:
         _labels_path:=~/networks/tf_label_map.pbtxt
     rosrun image_view image_view image:=/camera/rgb/image_raw
     rostopic echo /object_detector
-
-If you wish to set the clocks and GPU to full speed, then run
-([src](https://devtalk.nvidia.com/default/topic/1018081/jetson-tx2/tensorflow-mobilenet-object-detection-model-in-tx2-is-very-slow-/post/5185487/),
-[nvpmodel number reference](http://www.jetsonhacks.com/2017/03/25/nvpmodel-nvidia-jetson-tx2-development-kit/)):
-
-    sudo nvpmodel -m 0 # Maybe?
-    sudo ~/jetson_clocks.sh
-
-To check that they're running as fast as possible, check that @1300 is at the
-end of the lines printed:
-
-    sudo ~/jetson_clocks.sh --show
