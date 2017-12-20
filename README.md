@@ -272,8 +272,10 @@ Clone the *vision_opencv* package to make *cv_bridge* work with Python 3:
 Now build OpenCV 2 for Python 3
 ([src](https://www.pyimagesearch.com/2016/10/24/ubuntu-16-04-how-to-install-opencv/)).
 Note you'll need roughly 12 GiB of disk space for this. If you don't have that,
-then rsync a bunch of your files off the Jetson, delete them, and then copy them back
-after you do the `make install`.
+then rsync a bunch of your files off the Jetson, delete them, and then copy
+them back after you do the `make install`. Also, make sure you run `sudo
+~/jetson_clocks.sh` once (it toggles) before doing this so it'll compile
+faster.
 
     sudo apt-get install libavcodec-dev libavformat-dev libswscale-dev libv4l-dev \
         libxvidcore-dev libx264-dev libgtk-3-dev libatlas-base-dev gfortran python3-dev
