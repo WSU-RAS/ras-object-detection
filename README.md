@@ -157,13 +157,18 @@ Installing JetPack:
   Then it'll say it doesn't find the USB device. Check the NVIDIA CORP
   again. Then it'll install.
 * After copying over the filesystem, it'll error that it can't find the IP.
-  Then you can quit the installer. Plug the Jetson into your host computer
-  ethernet (so you can get IP from Wireshark) and share your connection or
-  into a router you can get the Jetson IP from. Then run the installer
-  again but make sure to select "no action" to install the OS when
-  re-running. Then when it gets to installing other software, e.g. CUDA,
-  it'll ask for the IP, user, and pass. Specify the IP and then "nvidia"
-  for both username and password.
+  Then you can quit the installer.
+* Install the Orbitty modifications to support USB and the PWM fan via
+  following [their instructions](http://connecttech.com/resource-center/cti-l4t-nvidia-jetson-board-support-package-release-notes/#bkb-h5).
+  You'll end up running the command `sudo ./flash.sh orbitty mmcblk0p1`.
+  Note, do this *before* installing anything else since this step will
+  overwrite the whole filesystem.
+* Plug the Jetson into your host computer ethernet (so you can get IP from
+  Wireshark) and share your connection or into a router you can get the Jetson
+  IP from. Then run the installer again but make sure to select "no action" to
+  install the OS ("Flash OS Image to Target") when re-running. Then when it
+  gets to installing other software, e.g. CUDA, it'll ask for the IP, user, and
+  pass. Specify the IP and then "nvidia" for both username and password.
   ([src](https://devtalk.nvidia.com/default/topic/1002081/jetson-tx2/jetpack-3-0-install-with-a-vm/))
 * Note: after it's all done, to shut down VirtualBox, you probably have to
   uncheck the USB device.
@@ -178,7 +183,12 @@ Disable the display manager (if desired):
     sudo rm /etc/X11/default-display-manager
     sudo touch /etc/X11/default-display-manager
 
-Update
+Enable universe and multiverse repositories (e.g. to install htop):
+
+    sudo add-apt-repository universe
+    sudo add-apt-repository multiverse
+
+Update:
 
     sudo apt update
     sudo apt upgrade
@@ -204,8 +214,8 @@ you need cuDNNv7. Download the .deb from
 Then:
 
     sudo dpkg -i nv-tensorrt-repo-ubuntu1604-rc-cuda8.0-trt3.0-20170922_3.0.0-1_arm64.deb
-    sudo apt-get update
-    sudo apt-get install tensorrt python3-dev
+    sudo apt update
+    sudo apt install tensorrt python3-dev
 
 Finally, install TensorFlow for Python 3.5:
 
