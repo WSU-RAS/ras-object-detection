@@ -200,7 +200,7 @@ Update:
 
 Install TensorFlow
 
-    sudo apt install python3-pip htop jnettop protobuf-compiler python-pil python-lxml
+    sudo apt install python3-pip python3-numpy python3-matplotlib htop jnettop protobuf-compiler python-pil python-lxml libxml2-dev libxslt1-dev
     sudo -H pip3 install --upgrade pip
     sudo -H pip3 install pillow lxml jupyter matplotlib
 
@@ -267,17 +267,15 @@ Install ROS ([src](http://wiki.ros.org/lunar/Installation/Ubuntu)):
     sudo sh -c 'echo "deb http://packages.ros.org/ros/ubuntu $(lsb_release -sc) main" > /etc/apt/sources.list.d/ros-latest.list'
     sudo apt-key adv --keyserver hkp://ha.pool.sks-keyservers.net:80 --recv-key 421C365BD9FF1F717815A3895523BAEEB01FA116
     sudo apt-get update
-    sudo apt-get install ros-lunar-desktop-full
+    sudo apt-get install ros-lunar-desktop-full libroscpp-dev librospack-dev libtf2-ros-dev libtf-dev libnodeletlib-dev
     sudo apt-get install python-rosinstall python-rosinstall-generator python-wstool build-essential
     sudo rosdep init
     rosdep update
-    echo "source /opt/ros/lunar/setup.bash" >> ~/.bashrc
-    source ~/.bashrc
 
 Make ROS work with Python 3:
 
     sudo apt-get install python3-empy # Errors building messages without this
-    sudo -H pip3 install catkin_pkg # Provides rospy for Python 3
+    sudo -H pip3 install catkin_pkg rospkg # Provides rospy for Python 3
 
 Clone the *vision_opencv* package to make *cv_bridge* work with Python 3:
 
@@ -317,18 +315,28 @@ installed:
 
     echo 'export PYTHONPATH="/usr/local/lib/python3.5/dist-packages:$PYTHONPATH"' >> ~/.bashrc
 
+Allow working with the Orbbec Astra camera, then make sure to unplug then plug
+back in the camera:
+
+    sudo apt install python3-yaml
+    cd ~/catkin_ws/src
+    git clone https://github.com/orbbec/ros_astra_launch.git
+    git clone https://github.com/orbbec/ros_astra_camera.git
+    git clone https://github.com/ros-drivers/rgbd_launch.git
+    cd ros_astra_camera
+    ./scripts/create_udev_rules
+
 Build everything:
 
+    source /opt/ros/lunar/setup.bash
     cd ~/catkin_ws
-    catkin_make -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
+    catkin_make -DFILTER=OFF -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
     catkin_make install
-
-    echo "source ~/catkin_ws/devel/setup.bash" >> ~/.bashrc
-    source ~/.bashrc
 
 ### YOLO Setup
 For working with YOLO:
 
+    source ~/catkin_ws/devel/setup.bash
     cd ~/catkin_ws/src
     git clone --recursive https://github.com/floft/darknet_ros.git
     cd ..
@@ -384,19 +392,24 @@ end of the lines printed:
 
 #### Running YOLO
 
+    source ~/catkin_ws/devel/setup.bash
     roslaunch darknet_ros darknet_ros.launch
 
 #### Running TensorFlow:
 
 Run the Object Detector after editing the *params.yaml* file:
 
+    source ~/catkin_ws/devel/setup.bash
     roslaunch object_detector_ros object_detector.launch
 
 Or, run components individually:
 
+    source /opt/ros/lunar/setup.bash
     roscore
+    rosrun image_view image_view image:=/camera/rgb/image_raw
+    rostopic echo /object_detector
+
+    source ~/catkin_ws/devel/setup.bash
     rosrun object_detector_ros object_detector.py \
         _graph_path:=~/networks/ssd_mobilenet_v1.pb \
         _labels_path:=~/networks/tf_label_map.pbtxt
-    rosrun image_view image_view image:=/camera/rgb/image_raw
-    rostopic echo /object_detector
