@@ -369,11 +369,12 @@ in *~/catkin_ws/src/darknet_ros/darknet_ros/launch/darknet_ros.launch*.
 
 #### Speed
 
-If you wish to set the clocks and GPU to full speed, then run
+If you wish to set the clocks and GPU to full speed (and didn't enable this on
+boot), then run
 ([src](https://devtalk.nvidia.com/default/topic/1018081/jetson-tx2/tensorflow-mobilenet-object-detection-model-in-tx2-is-very-slow-/post/5185487/),
 [nvpmodel number reference](http://www.jetsonhacks.com/2017/03/25/nvpmodel-nvidia-jetson-tx2-development-kit/)):
 
-    sudo nvpmodel -m 0 # Maybe?
+    sudo nvpmodel -m 0
     sudo ~/jetson_clocks.sh
 
 To check that they're running as fast as possible, check that @1300 is at the
