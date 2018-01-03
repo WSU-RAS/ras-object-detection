@@ -194,7 +194,7 @@ class ObjectDetectorNode:
         graph_path = os.path.expanduser(rospy.get_param("~graph_path"))
         labels_path = os.path.expanduser(rospy.get_param("~labels_path"))
         threshold = rospy.get_param("~threshold", 0.5)
-        camera_namespace = rospy.get_param("~camera_namespace", "/camera/rgb/image_raw")
+        camera_namespace = rospy.get_param("~camera_namespace", "/camera/rgb/image_rect_color")
 
         # Object Detector
         self.detector = ObjectDetector(graph_path, labels_path, threshold)

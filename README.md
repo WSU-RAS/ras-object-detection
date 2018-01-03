@@ -373,6 +373,19 @@ in *~/catkin_ws/src/darknet_ros/darknet_ros/launch/darknet_ros.launch*.
               -  umbrella
               -  watercan
 
+### Calibration
+Install
+
+    cd ~/catkin_ws/src
+    git clone https://github.com/ros-perception/image_pipeline
+    cd ..
+    catkin_make
+
+Print [checkerboard](http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration?action=AttachFile&do=view&target=check-108.pdf)
+and measure square in meters. Mine are 0.025 m. Follow the [tutorial](http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration).
+
+    rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.025 image:=/camera/rgb/image_raw camera:=/camera/rgb
+
 ### Running
 
 #### Speed
