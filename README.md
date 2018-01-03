@@ -183,6 +183,11 @@ Disable the display manager (if desired):
     sudo rm /etc/X11/default-display-manager
     sudo touch /etc/X11/default-display-manager
 
+Set CPUs and GPU to max performance on boot (if desired): add this right before
+the `exit 0` in */etc/rc.local* script:
+
+    ( sleep 60 && nvpmodel -m 0 && /home/ubuntu/jetson_clocks.sh )&
+
 Enable universe and multiverse repositories (e.g. to install htop):
 
     sudo add-apt-repository universe
