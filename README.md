@@ -326,12 +326,22 @@ back in the camera:
     cd ros_astra_camera
     ./scripts/create_udev_rules
 
+Camera Calibration and Depth Sensor:
+
+    cd ~/catkin_ws/src
+    git clone https://github.com/ros-perception/image_pipeline
+
 Build everything:
 
     source /opt/ros/lunar/setup.bash
     cd ~/catkin_ws
     catkin_make -DFILTER=OFF -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
     catkin_make install
+
+Print [checkerboard](http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration?action=AttachFile&do=view&target=check-108.pdf)
+and measure square in meters. Mine are 0.025 m. Follow the [tutorial](http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration).
+
+    rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.025 image:=/camera/rgb/image_raw camera:=/camera/rgb
 
 ### YOLO Setup
 For working with YOLO:
@@ -373,18 +383,29 @@ in *~/catkin_ws/src/darknet_ros/darknet_ros/launch/darknet_ros.launch*.
               -  umbrella
               -  watercan
 
-### Calibration
-Install
+### Arduino Setup for Camera Pan/Tilt
+Install Arduino IDE 1.0.6 on some computer (on Arch Linux try the *arduino10*
+package in the AUR). Follow [ArbotiX-M instructions](http://learn.trossenrobotics.com/arbotix/7-arbotix-quick-start-guide).
+Download the [ArbotiX-M](https://github.com/trossenrobotics/arbotix/archive/master.zip)
+files and extract into your *~/sketchbook* folder.
 
+If you can't get permissions to work despite adding yourself to uucp and lock
+groups, then make sure that "/run/lock" is in the lock group:
+
+    sudo chgrp lock /run/lock
+
+Then, upload the File -> Sketchbook -> ArbotiX Sketches -> ros.
+
+Setting up on the Jetson so you can control the servos from ROS:
+
+    sudo apt install ros-lunar-rosserial ros-lunar-rosserial-arduino
     cd ~/catkin_ws/src
-    git clone https://github.com/ros-perception/image_pipeline
+    git clone https://github.com/vanadiumlabs/arbotix_ros.git
     cd ..
     catkin_make
 
-Print [checkerboard](http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration?action=AttachFile&do=view&target=check-108.pdf)
-and measure square in meters. Mine are 0.025 m. Follow the [tutorial](http://wiki.ros.org/camera_calibration/Tutorials/MonocularCalibration).
-
-    rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.025 image:=/camera/rgb/image_raw camera:=/camera/rgb
+    roslaunch object_detector_ros camera.launch
+    arbotix_gui
 
 ### Running
 
