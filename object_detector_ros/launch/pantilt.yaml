@@ -1,7 +1,7 @@
 port: /dev/ttyUSB0
 rate: 15
 joints: {
-    head_pan_joint: {id: 1, invert: true},
+    head_pan_joint: {id: 1, invert: false},
     head_tilt_joint: {id: 2, max_angle: 100, min_angle: -10}
 }
 controllers: {
