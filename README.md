@@ -407,7 +407,54 @@ Setting up on the Jetson so you can control the servos from ROS:
     roslaunch object_detector_ros camera.launch
     arbotix_gui
 
-### Running
+### Connecting to NUC
+Since we'll run some on the Jetson and some on the NUC, we'll need to set one
+up as the ROS master.  We'll use the NUC.
+
+Jetson (since we enabled systemd-resolved earlier), so we can resolve the NUC
+hostname with LLMNR:
+
+    sudo apt install libnss-resolve
+
+In *~/.bashrc* on the Jetson:
+
+    export ROS_MASTER_URI=http://wsu-ras:11311
+
+In *~/.bashrc* on the NUC:
+
+    export ROS_MASTER_URI=http://wsu-ras:11311
+    export TURTLEBOT_3D_SENSOR=astra
+
+Measure where the camera is relative to */base_link*, and then modify
+*/opt/ros/kinetic/share/turtlebot_description/urdf/turtlebot_properties.urdf.xacro*
+accordingly. For us on the TurtleBot 2, these are z = 1.4224 m and x = 0.0635 m.
+
+Then, run on the NUC:
+
+    cd ~/catkin_ws/src
+    git clone https://github.com/floft/ras-description.git ras_description
+    cd ..
+    catkin_make
+    source ~/catkin_ws/devel/setup.bash
+    roslaunch ras_description description.launch
+
+    roscore
+    roslaunch turtlebot_bringup minimal.launch
+    roslaunch turtlebot_bringup 3dsensor.launch
+    roslaunch turtlebot_teleop keyboard_teleop.launch
+
+Then, run on Jetson:
+
+    roslaunch astra_launch astra.launch publish_tf:=false
+    roslaunch object_detector_ros pantilt.launch
+    rosrun arbotix_python arbotix_gui
+
+To level the camera:
+
+    rostopic pub -1 /head_pan_joint/command std_msgs/Float64 0
+    rostopic pub -1 /head_tilt_joint/command std_msgs/Float64 0.25
+
+### Running Object Detection
 
 #### Speed
 
@@ -429,7 +476,7 @@ end of the lines printed:
     source ~/catkin_ws/devel/setup.bash
     roslaunch darknet_ros darknet_ros.launch
 
-#### Running TensorFlow:
+#### Running TensorFlow
 
 Run the Object Detector after editing the *params.yaml* file:
 
