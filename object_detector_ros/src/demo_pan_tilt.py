@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from std_msgs.msg import Float64
 
@@ -11,13 +11,13 @@ def panTilt():
     while not rospy.is_shutdown():
         for i in range(100):
             pan.publish((i-50)/100)
-            tilt.publish(i/100)
+            tilt.publish(i/100/2)
             rate.sleep()
 
         for i in range(100):
             j = 100-i
             pan.publish((j-50)/100)
-            tilt.publish(j/100)
+            tilt.publish(j/100/2)
             rate.sleep()
 
 if __name__ == '__main__':

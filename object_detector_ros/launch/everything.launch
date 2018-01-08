@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<launch>
+    <!-- Object Detector -->
+    <include file="$(find object_detector_ros)/launch/object_detector.launch" />
+
+    <!-- Zero the pan tilt so camera is in a good position -->
+    <include file="$(find object_detector_ros)/launch/pantilt.launch" />
+    <include file="$(find object_detector_ros)/launch/zero_pan_tilt.launch" />
+
+    <!-- Start camera, but don't override model of where camera is -->
+    <include file="$(find astra_launch)/launch/astra.launch">
+        <arg name="publish_tf" value="false" />
+    </include>
+</launch>

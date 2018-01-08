@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 import rospy
 from std_msgs.msg import Float64
 
@@ -6,9 +6,11 @@ def panTilt():
     pan = rospy.Publisher('/head_pan_joint/command', Float64, queue_size=2)
     tilt = rospy.Publisher('/head_tilt_joint/command', Float64, queue_size=2)
     rospy.init_node('pan_tilt', anonymous=True)
-    rate = rospy.Rate(10) # 10hz
-    i = 0
+    hz = 10
+    seconds = 10 # exit after this many seconds (takes some time for Arbotix to launch)
+    rate = rospy.Rate(hz) # Hz
 
+    i = 0
     while not rospy.is_shutdown():
         pan.publish(0)
         tilt.publish(0.25)
@@ -16,7 +18,7 @@ def panTilt():
 
         # Run only briefly
         i += 1
-        if i > 10:
+        if i >hz*seconds: 
             break
 
 if __name__ == '__main__':
