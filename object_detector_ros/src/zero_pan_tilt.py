@@ -13,7 +13,8 @@ def panTilt():
     i = 0
     while not rospy.is_shutdown():
         pan.publish(0)
-        tilt.publish(0.25)
+        #tilt.publish(0.25)
+        tilt.publish(0.7)
         rate.sleep()
 
         # Run only briefly
