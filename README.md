@@ -383,6 +383,10 @@ in *~/catkin_ws/src/darknet_ros/darknet_ros/launch/darknet_ros.launch*.
               -  umbrella
               -  watercan
 
+If you don't want it showing the window with predictions, then set
+*enable_opencv* and *use_darknet* to false in
+*~/catkin_ws/src/darknet_ros/darknet_ros/config/ros.yaml*.
+
 ### Arduino Setup for Camera Pan/Tilt
 Install Arduino IDE 1.0.6 on some computer (on Arch Linux try the *arduino10*
 package in the AUR). Follow [ArbotiX-M instructions](http://learn.trossenrobotics.com/arbotix/7-arbotix-quick-start-guide).
@@ -420,6 +424,9 @@ In *~/.bashrc* on the Jetson:
 
     export ROS_MASTER_URI=http://wsu-ras:11311
 
+Then, replace 127.0.1.1 with 127.0.0.1 in */etc/hosts* on the Jetson.
+Otherwise, often it can't connect to the ROS master on the NUC.
+
 In *~/.bashrc* on the NUC:
 
     export ROS_MASTER_URI=http://wsu-ras:11311
@@ -433,26 +440,20 @@ Then, run on the NUC:
 
     cd ~/catkin_ws/src
     git clone https://github.com/floft/ras-description.git ras_description
-    cd ..
-    catkin_make
-    source ~/catkin_ws/devel/setup.bash
-    roslaunch ras_description description.launch
 
+    source ~/catkin_ws/devel/setup.bash
     roscore
-    roslaunch turtlebot_bringup minimal.launch
-    roslaunch turtlebot_bringup 3dsensor.launch
-    roslaunch turtlebot_teleop keyboard_teleop.launch
+    roslaunch ras_description everything.launch
 
 Then, run on Jetson:
 
-    roslaunch astra_launch astra.launch publish_tf:=false
-    roslaunch object_detector_ros pantilt.launch
+    roslaunch object_detector_ros everything.launch
+    # Test script to output points
+    rosrun object_detector_ros points.py
+
+    # Optionally either of these, to control the camera:
     rosrun arbotix_python arbotix_gui
-
-To level the camera:
-
-    rostopic pub -1 /head_pan_joint/command std_msgs/Float64 0
-    rostopic pub -1 /head_tilt_joint/command std_msgs/Float64 0.25
+    rosrun object_detector_ros demo_pan_tilt.py
 
 ### Running Object Detection
 
@@ -491,6 +492,7 @@ Or, run components individually:
     rostopic echo /object_detector
 
     source ~/catkin_ws/devel/setup.bash
+    # note: errors if you source the /opt/ros/lunar/setup.bash one
     rosrun object_detector_ros object_detector.py \
         _graph_path:=~/networks/ssd_mobilenet_v1.pb \
         _labels_path:=~/networks/tf_label_map.pbtxt
