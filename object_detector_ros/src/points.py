@@ -5,6 +5,8 @@ from sensor_msgs.msg import PointCloud2
 # TODO also support the TensorFlow bounding boxes
 from darknet_ros_msgs.msg import BoundingBoxes
 import sensor_msgs.point_cloud2 as pc2
+import tf2_ros
+import tf2_sensor_msgs
 
 lastSeen = None
 
@@ -40,6 +42,16 @@ def callback_point(data):
 
             print("%s x %f y %f z %f" %(b.Class,points[i][0],points[i][1],points[i][2]))
         """
+        # Convert point cloud to map reference frame
+        try:
+            # target frame, source frame, time
+            # TODO replace "base_link" with "map" once we have a map
+            transform = tfBuffer.lookup_transform("base_link", "camera_link", rospy.Time())
+        except (tf2_ros.LookupException, tf2_ros.ConnectivityException,
+                tf2_ros.ExtrapolationException):
+            print("Error with tf2")
+
+        cloud = tf2_sensor_msgs.do_transform_cloud(data, transform)
 
         # Get list of points we want -- note: (u,v) is in image, (x,y,z) is in 3D space
         uvs = []
@@ -55,7 +67,7 @@ def callback_point(data):
         points = []
 
         # TODO try skip_nans=True
-        for p in pc2.read_points(data, field_names=("x","y","z"), uvs=uvs, skip_nans=False):
+        for p in pc2.read_points(cloud, field_names=("x","y","z"), uvs=uvs, skip_nans=False):
             points.append((p[0],p[1],p[2]))
 
         # TODO is there a locking issue here...?
@@ -83,8 +95,17 @@ def callback_box(data):
 
 def listener():
     rospy.init_node('findObjects', anonymous=True)
+
+    # Listen to point cloud
     rospy.Subscriber("/camera/depth_registered/points", PointCloud2, callback_point)
+
+    # Listen to bounding boxes
     rospy.Subscriber("/darknet_ros/bounding_boxes", BoundingBoxes, callback_box)
+
+    # Listen to reference frames, for the coordinate transformations
+    tf_buffer = tf2_ros.Buffer()
+    tf_listener = tf2_ros.TransformListener(tf_buffer)
+
     rospy.spin()
 
 if __name__ == '__main__':
