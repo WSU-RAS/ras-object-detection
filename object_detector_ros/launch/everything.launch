@@ -4,6 +4,9 @@
     <!--<include file="$(find object_detector_ros)/launch/object_detector.launch" />-->
     <include file="$(find darknet_ros)/launch/darknet_ros.launch" />
 
+    <!-- Take point cloud and bounding boxes to find object 3D locations -->
+    <include file="$(find object_detector_ros)/launch/find_objects.launch" />
+
     <!-- Zero the pan tilt so camera is in a good position -->
     <include file="$(find object_detector_ros)/launch/pantilt.launch" />
     <include file="$(find object_detector_ros)/launch/zero_pan_tilt.launch" />

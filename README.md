@@ -456,8 +456,6 @@ Then, run on the NUC:
 Then, run on Jetson:
 
     roslaunch object_detector_ros everything.launch
-    # Test script to output points
-    rosrun object_detector_ros points.py
 
     # Optionally either of these, to control the camera:
     rosrun arbotix_python arbotix_gui
