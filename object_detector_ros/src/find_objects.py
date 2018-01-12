@@ -4,11 +4,8 @@ import copy
 import numpy as np
 from sensor_msgs.msg import PointCloud2
 import sensor_msgs.point_cloud2 as pc2
-
-# TODO also support the TensorFlow bounding boxes
-# And TODO change from /base_link or /odom to /map in launch file
 from darknet_ros_msgs.msg import BoundingBoxes
-from cob_perception_msgs.msg import Detection, DetectionArray, Rect, Object
+from cob_perception_msgs.msg import Object
 
 # Coordinate transformation
 import tf2_ros
@@ -29,7 +26,7 @@ class FindObjectsNode:
         node = FindObjectsNode()
         rospy.spin()
     """
-    def __init__(self, lastSeenTimeout = 30):
+    def __init__(self, lastSeenTimeout=30):
         # For saving bounding boxes in one callback and using in another
         self.lastSeen = None
         self.lastSeenCount = 0
@@ -56,7 +53,12 @@ class FindObjectsNode:
                     self.callback_point)
 
             # Listen to bounding boxes
+            #
+            # I made both use the Darknet bounding boxes messages, so either
+            # will work (or both, as long as they use the same object names)
             rospy.Subscriber("/darknet_ros/bounding_boxes", BoundingBoxes,
+                    self.callback_box)
+            rospy.Subscriber("/object_detector", BoundingBoxes,
                     self.callback_box)
         else:
             rospy.logerr("failed to get transform from tf2")
@@ -150,10 +152,9 @@ class FindObjectsNode:
                     msg.z = p[2]
                     self.pub.publish(msg)
 
-                    # Debugging
                     rospy.logdebug("%s x %f y %f z %f" %(b.Class,p[0],p[1],p[2]))
                 else:
-                    rospy.logerr("all points are NaN in bounding box")
+                    rospy.loginfo("all points are NaN in bounding box")
 
     def callback_box(self, data):
         """
@@ -165,7 +166,6 @@ class FindObjectsNode:
         # We just received a frame, so reset this count
         self.lastSeenCount = 0
 
-        # Debugging
         for b in data.boundingBoxes:
             rospy.logdebug("Box: xmin : %d ymin : %d xmax : %d ymax : %d prob : %d class : %s" % (
                     b.xmin, b.ymin, b.xmax, b.ymax, b.probability, b.Class

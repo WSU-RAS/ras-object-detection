@@ -23,8 +23,11 @@ from matplotlib import pyplot as plt
 import rospy
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge, CvBridgeError
+
+# Messages, either from COB or Darknet's
 # From: https://github.com/ipa320/cob_perception_common in cob_perception_msgs
 from cob_perception_msgs.msg import Detection, DetectionArray, Rect
+from darknet_ros_msgs.msg import BoundingBoxes, BoundingBox
 
 # Note: must have models/research/ and models/research/slim/ in PYTHONPATH
 from object_detection.utils import label_map_util
@@ -135,7 +138,7 @@ class ObjectDetector:
         plt.imshow(image_np)
         plt.show()
 
-    def msg(self, image, boxes, scores, classes):
+    def msgCOB(self, image, boxes, scores, classes):
         """
         Create the Object Detector message to publish with ROS
 
@@ -168,6 +171,35 @@ class ObjectDetector:
 
         return msg
 
+    def msgDN(self, image, boxes, scores, classes):
+        """
+        Create the Object Detector message to publish with ROS
+
+        This uses the Darknet BoundingBox[es] messages
+        """
+        msg = BoundingBoxes()
+        msg.header = image.header
+        scores_above_threshold = np.where(scores > self.threshold)[1]
+
+        for s in scores_above_threshold:
+            # Get the properties
+            bb = boxes[0,s,:]
+            sc = scores[0,s]
+            cl = classes[0,s]
+
+            # Create the bounding box message
+            detection = BoundingBox()
+            detection.Class = self.category_index[int(cl)]['name']
+            detection.probability = sc
+            detection.xmin = int((image.width-1) * bb[1])
+            detection.ymin = int((image.height-1) * bb[0])
+            detection.xmax = int((image.width-1) * bb[3])
+            detection.ymax = int((image.height-1) * bb[2])
+
+            msg.boundingBoxes.append(detection)
+
+        return msg
+
 class ObjectDetectorNode:
     """
     Subscribe to the images and publish object detection results with ROS
@@ -185,7 +217,8 @@ class ObjectDetectorNode:
     """
     def __init__(self, averageFPS=60):
         # We'll publish the results
-        self.pub = rospy.Publisher('object_detector', DetectionArray, queue_size=10)
+        #self.pub = rospy.Publisher('object_detector', DetectionArray, queue_size=10)
+        self.pub = rospy.Publisher('object_detector', BoundingBoxes, queue_size=10)
 
         # Name this node
         rospy.init_node('object_detector', anonymous=True)
@@ -229,7 +262,8 @@ class ObjectDetectorNode:
         try:
             image_np = self.bridge.imgmsg_to_cv2(data, "bgr8")
             boxes, scores, classes = self.detector.process(image_np)
-            self.pub.publish(self.detector.msg(data, boxes, scores, classes))
+            #self.pub.publish(self.detector.msgCOB(data, boxes, scores, classes))
+            self.pub.publish(self.detector.msgDN(data, boxes, scores, classes))
         except CvBridgeError as e:
             rospy.logerr(e)
             error = "(error)"
