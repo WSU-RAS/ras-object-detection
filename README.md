@@ -331,6 +331,14 @@ Camera Calibration and Depth Sensor:
     cd ~/catkin_ws/src
     git clone https://github.com/ros-perception/image_pipeline
 
+Package that allows our code to do coordinate transforms on point clouds.
+There's a package "python-tf2-sensor-msgs" that should do this, but it's old
+enough that it errors on importing due to some renames.
+
+    sudo apt install ros-lunar-tf2-bullet
+    cd ~/catkin_ws/src
+    git clone https://github.com/ros/geometry2
+
 Build everything:
 
     source /opt/ros/lunar/setup.bash
