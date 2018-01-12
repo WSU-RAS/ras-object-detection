@@ -3,6 +3,7 @@ import rospy
 import copy
 import numpy as np
 from sensor_msgs.msg import PointCloud2
+from geometry_msgs.msg import PointStamped
 import sensor_msgs.point_cloud2 as pc2
 from darknet_ros_msgs.msg import BoundingBoxes
 from cob_perception_msgs.msg import Object
@@ -41,6 +42,12 @@ class FindObjectsNode:
         # Params
         self.target = rospy.get_param("~target", "map")
         self.source = rospy.get_param("~source", "camera_depth_optical_frame")
+        self.debug = rospy.get_param("~debug", False)
+
+        # For debugging also publish a point that we can vizualize in rviz
+        if self.debug:
+            self.debugPoint = rospy.Publisher('find_objects_debug',
+                    PointStamped, queue_size=30)
 
         # Listen to reference frames, for the coordinate transformations
         self.tf_buffer = tf2_ros.Buffer()
@@ -151,6 +158,15 @@ class FindObjectsNode:
                     msg.y = p[1]
                     msg.z = p[2]
                     self.pub.publish(msg)
+
+                    if self.debug:
+                        msg = PointStamped()
+                        # Apparently supposed to be the reference frame for when plotted in rviz
+                        msg.header.frame_id = self.target
+                        msg.point.x = p[0]
+                        msg.point.y = p[1]
+                        msg.point.z = p[2]
+                        self.debugPoint.publish(msg)
 
                     rospy.logdebug("%s x %f y %f z %f" %(b.Class,p[0],p[1],p[2]))
                 else:
