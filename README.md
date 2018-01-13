@@ -351,6 +351,29 @@ and measure square in meters. Mine are 0.025 m. Follow the [tutorial](http://wik
 
     rosrun camera_calibration cameracalibrator.py --size 8x6 --square 0.025 image:=/camera/rgb/image_raw camera:=/camera/rgb
 
+### Database Setup
+This is based on [the ROS PostgreSQL
+tutorial](http://wiki.ros.org/sql_database/Tutorials/Installing%20a%20PostgreSQL%20Server).
+Install PostgreSQL:
+
+    sudo apt install postgresql pgadmin3 python{,3}-psycopg2
+
+Add a user:
+
+    sudo su - postgres
+    psql
+    CREATE ROLE ras LOGIN CREATEDB CREATEROLE PASSWORD 'ras';
+
+Add to */etc/postgresql/9.5/main/pg_hba.conf* above all the defaults at the
+bottom, and then `sudo systemctl restart postgresql@9.5-main.service`.
+
+    # ras user can connect locally with password
+    local   all         ras                            md5
+
+To check that you can log in:
+
+    psql --username ras --password --dbname postgres
+
 ### YOLO Setup
 For working with YOLO:
 
