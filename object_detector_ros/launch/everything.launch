@@ -7,6 +7,9 @@
     <!-- Take point cloud and bounding boxes to find object 3D locations -->
     <include file="$(find object_detector_ros)/launch/find_objects.launch" />
 
+    <!-- Save object locations to the database -->
+    <include file="$(find object_detector_ros)/launch/update_object_db.launch" />
+
     <!-- Zero the pan tilt so camera is in a good position -->
     <include file="$(find object_detector_ros)/launch/pantilt.launch" />
     <include file="$(find object_detector_ros)/launch/zero_pan_tilt.launch" />
