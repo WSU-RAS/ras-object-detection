@@ -12,7 +12,7 @@ Also included are the ROS packages to run this on the robot.
 ### Getting code
 Download this repository and all the submodules:
 
-    git clone --recursive https://github.com/floft/ras-object-detection.git
+    git clone --recursive https://github.com/WSU-RAS/ras-object-detection.git
     cd ras-object-detection
 
 ### Capturing bag file of images on robot
@@ -255,7 +255,7 @@ initializing the submodules.
 
     mkdir -p ~/catkin_ws/src
     cd ~/catkin_ws/src/
-    git clone --recursive https://github.com/floft/ras-object-detection.git
+    git clone --recursive https://github.com/WSU-RAS/ras-object-detection.git
 
 Then, generate the protobuf files:
 
@@ -379,7 +379,7 @@ For working with YOLO:
 
     source ~/catkin_ws/devel/setup.bash
     cd ~/catkin_ws/src
-    git clone --recursive https://github.com/floft/darknet_ros.git
+    git clone --recursive https://github.com/WSU-RAS/darknet_ros.git
     cd ..
     catkin_make -DCMAKE_BUILD_TYPE=Release -DPYTHON_EXECUTABLE=/usr/bin/python3 -DPYTHON_VERSION=3
 
@@ -470,7 +470,7 @@ accordingly. For us on the TurtleBot 2, these are z = 1.4224 m and x = 0.0635 m.
 Then, run on the NUC:
 
     cd ~/catkin_ws/src
-    git clone https://github.com/floft/ras-description.git ras_description
+    git clone https://github.com/WSU-RAS/ras-description.git ras_description
 
     source ~/catkin_ws/devel/setup.bash
     roscore
