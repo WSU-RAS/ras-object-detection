@@ -1,15 +1,15 @@
 [submodule "models"]
 	path = models
-    url = https://github.com/floft/models.git
-    #url = git@github.com:floft/models.git
+    url = https://github.com/WSU-RAS/models.git
+    #url = git@github.com:WSU-RAS/models.git
 	ignore = dirty
 [submodule "darknet"]
 	path = darknet
-	url = https://github.com/floft/darknet.git
-    #url = git@github.com:floft/darknet.git
+	url = https://github.com/WSU-RAS/darknet.git
+    #url = git@github.com:WSU-RAS/darknet.git
 	ignore = dirty
 [submodule "squeezeDet"]
 	path = squeezeDet
-	url = https://github.com/floft/squeezeDet.git
-    #url = git@github.com:floft/squeezeDet.git
+	url = https://github.com/WSU-RAS/squeezeDet.git
+    #url = git@github.com:WSU-RAS/squeezeDet.git
 	ignore = dirty
