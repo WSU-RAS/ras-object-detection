@@ -8,7 +8,8 @@ Look at:
 import rosbag
 import rospy
 import cv2 as cv
-from sensor_msgs.msg import Image
+import numpy as np
+from sensor_msgs.msg import Image, CompressedImage
 from cv_bridge import CvBridge, CvBridgeError
 
 # Reading bag filename from command line or roslaunch parameter.
@@ -23,13 +24,16 @@ class ImageCreator():
 
         # Open bag file.
         with rosbag.Bag(filename, 'r') as bag:
+            for topic, msg, t in bag.read_messages(connection_filter=self.filter_std_compressed_image):
+                self.saveImg(topic, msg, compressed=True)
+
             for topic, msg, t in bag.read_messages(connection_filter=self.filter_std_image):
                 self.saveImg(topic, msg)
 
             for topic, msg, t in bag.read_messages(connection_filter=self.filter_wfov_image):
                 self.saveImg(topic, msg.image)
 
-    def saveImg(self, topic, msg):
+    def saveImg(self, topic, msg, compressed=False):
         if rospy.is_shutdown():
             print("ROS Shutdown while reading WFOV images")
             sys.exit(0)
@@ -39,7 +43,12 @@ class ImageCreator():
 
             # Hack to get around "[16UC1] ... The conversion does not make sense"
             # https://gist.github.com/awesomebytes/30bf7eae3a90754f82502accd02cbb12
-            if msg.encoding == "16UC1": # Depth
+            if compressed:
+                # TODO also support compressed depth
+                # See: http://wiki.ros.org/rospy_tutorials/Tutorials/WritingImagePublisherSubscriber
+                np_arr = np.fromstring(msg.data, np.uint8)
+                cv_image = cv.imdecode(np_arr, cv.IMREAD_COLOR)
+            elif msg.encoding == "16UC1": # Depth
                 msg.encoding = "mono16"
                 cv_image = self.bridge.imgmsg_to_cv2(msg, "mono8")
             else: # RGB
@@ -51,6 +60,10 @@ class ImageCreator():
             cv.imwrite(image_name, cv_image)
         except CvBridgeError, e:
             print (e)
+
+    # Allows only sensor_msgs/CompressedImage messages
+    def filter_std_compressed_image(self, topic, datatype, md5sum, msg_def, header):
+        return (True if "sensor_msgs/CompressedImage" in datatype else False)
 
     # Allows only sensor_msgs/Image messages
     def filter_std_image(self, topic, datatype, md5sum, msg_def, header):
