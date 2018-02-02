@@ -76,7 +76,7 @@ class ImageCreator():
 # Main function.
 if __name__ == '__main__':
     # Initialize the node and name it
-    rospy.init_node('unbagger_script')
+    rospy.init_node('unbagger_script', anonymous=True)
 
     if len(sys.argv) < 2:
         raise RuntimeError('python unbagger.py <save_dir>/ <filename>')
