@@ -97,12 +97,12 @@ for i in *.data; do
             # Continue where we left off
             echo " - continuing training on $i, starting training"
             cp -a "$backup/$name.backup" backup/
-            /usr/bin/time -v "$darknet" detector train "$i" "$name.cfg" "backup/$name.backup" -gpus $SLURM_JOB_GPUS
+            "$darknet" detector train "$i" "$name.cfg" "backup/$name.backup" -gpus $SLURM_JOB_GPUS
         fi
     else
         # Train and print out stats about time, processor utilization, etc.
         echo " - training on $i, backup $backup"
-        /usr/bin/time -v "$darknet" detector train "$i" "$name.cfg" "$weightsName" -gpus $SLURM_JOB_GPUS
+        "$darknet" detector train "$i" "$name.cfg" "$weightsName" -gpus $SLURM_JOB_GPUS
 
     fi
 
