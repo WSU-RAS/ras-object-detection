@@ -127,18 +127,18 @@ def main(_):
     labels = uniqueClasses(data)
 
     # Save labels
-    tfLabels(labels, config.datasetTFlabels)
+    tfLabels(labels, os.path.join(folder, config.datasetTFlabels))
 
     # Split into 70%, 10%, and 20%
     training_data, validate_data, testing_data = splitJsonData(data)
 
     # Save the record files
     print("Saving", config.datasetTFtrain)
-    tfRecord(folder, labels, config.datasetTFtrain, training_data)
+    tfRecord(folder, labels, os.path.join(folder, config.datasetTFtrain), training_data)
     print("Saving", config.datasetTFtrain)
-    tfRecord(folder, labels, config.datasetTFvalid, validate_data)
+    tfRecord(folder, labels, os.path.join(folder, config.datasetTFvalid), validate_data)
     print("Saving", config.datasetTFtest)
-    tfRecord(folder, labels, config.datasetTFtest, testing_data)
+    tfRecord(folder, labels, os.path.join(folder, config.datasetTFtest), testing_data)
 
 if __name__ == "__main__":
     tf.app.run()

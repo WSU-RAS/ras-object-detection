@@ -26,7 +26,7 @@ echo "Making sure TensorFlow installed: done"
 
 # Get the last checkpoint prefix, e.g.
 # path/to/tflogs/train/ssd_inception_v2/model.ckpt-200000
-lastCheckpoint="$(ls "$data/$datasetTFtrainlogs/$TFArch/"model.ckpt-* | \
+lastCheckpoint="$(ls "$data/$datasetFolder/$datasetTFtrainlogs/$TFArch/"model.ckpt-* | \
     sort | tail -n 1 | sed -r 's#\.[^\.]+$##g')"
 outputDir="$data/$datasetFolder/${TFArch}.pb"
 echo "Last checkpoint: $lastCheckpoint"
@@ -37,7 +37,7 @@ cd models/research
 export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
 python3 object_detection/export_inference_graph.py \
     --input_type image_tensor \
-    --pipeline_config_path="$data/$datasetTFconfig" \
+    --pipeline_config_path="$data/$datasetFolder/$datasetTFconfig" \
     --trained_checkpoint_prefix="$lastCheckpoint" \
     --output_directory="$outputDir"
 echo "Exporting network: done"

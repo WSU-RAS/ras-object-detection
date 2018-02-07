@@ -13,9 +13,9 @@ cat images.txt labels.txt > files.txt
 rm images.txt labels.txt
 
 # Copy a few more files
-echo "${datasetConfig}" >> files.txt
-echo "$datasetLabels" >> files.txt
+echo "${datasetFolder}/${datasetConfig}" >> files.txt
+echo "$datasetFolder/$datasetLabels" >> files.txt
 
 # Compress it
-[[ ! -e "$datasetCompressed" ]] && tar -cvzf "$datasetCompressed" -T files.txt
+[[ ! -e "$datasetFolder/$datasetCompressed" ]] && tar -cvzf "$datasetFolder/$datasetCompressed" -T files.txt
 rm files.txt

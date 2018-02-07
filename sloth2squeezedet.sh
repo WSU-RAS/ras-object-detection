@@ -11,6 +11,6 @@
 # We need to specify the class labels in the Python files or import from a text
 # file, so we'll copy it. We can't get the filename from the config file though
 # so copy it to a constant name.
-cp "$datasetLabels" "labels.names"
+cp "$datasetFolder/$datasetLabels" "labels.names"
 
 # TODO: convert ...

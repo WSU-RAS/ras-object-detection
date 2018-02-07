@@ -8,15 +8,15 @@
 dataset="SmartHome2"
 datasetFolder="datasets/SmartHome2"
 
-# Files for TensorFlow
-datasetTFconfig="datasets/SmartHome2/tf.config"
-datasetTFtrain="datasets/SmartHome2/tftrain.record"
-datasetTFtest="datasets/SmartHome2/tftest.record"
-datasetTFvalid="datasets/SmartHome2/tfvalid.record"
-datasetTFlabels="datasets/SmartHome2/tf_label_map.pbtxt"
-# Log files during training for TensorBoard
-datasetTFtrainlogs="datasets/SmartHome2/tflogs/train"
-datasetTFevallogs="datasets/SmartHome2/tflogs/eval"
+# Files for TensorFlow - in datasetFolder
+datasetTFconfig="tf.config"
+datasetTFtrain="tftrain.record"
+datasetTFtest="tftest.record"
+datasetTFvalid="tfvalid.record"
+datasetTFlabels="tf_label_map.pbtxt"
+# Log files during training for TensorBoard - in datasetFolder
+datasetTFtrainlogs="tflogs/train"
+datasetTFevallogs="tflogs/eval"
 # For evaluation, 0 means forever (until job ends)
 maxTFEvals=0
 # Which network to use (config is based on copying this sample), note that whenever
@@ -26,10 +26,10 @@ maxTFEvals=0
 TFArch="ssd_inception_v2"
 #TFArch="faster_rcnn_resnet101"
 
-# Files for YOLO
-datasetLabels="datasets/SmartHome2/labels.names"
-datasetConfig="datasets/SmartHome2/config.cfg"
-datasetCompressed="datasets/SmartHome2/files.tar.gz"
+# Files for YOLO - in datasetFolder
+datasetLabels="labels.names"
+datasetConfig="config.cfg"
+datasetCompressed="files.tar.gz"
 
 dataPrefix="dataset"
 trainingPrefix="training"

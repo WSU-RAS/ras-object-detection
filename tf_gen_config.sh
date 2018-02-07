@@ -7,10 +7,10 @@
 maxExamples=2000
 
 cp models/research/object_detection/samples/configs/"$TFArch"_pets.config \
-    "$datasetTFconfig"
+    "$datasetFolder/$datasetTFconfig"
 
 # Count labels
-classes="$(grep "item" "$datasetTFlabels" | wc -l)"
+classes="$(grep "item" "$datasetFolder/$datasetTFlabels" | wc -l)"
 
 # The ../../ is because we'll be running the training script from with
 # models/research/
@@ -18,18 +18,18 @@ sed -ri "
 s#num_classes: [0-9]+#num_classes: $classes#g
 s#num_examples: [0-9]+#num_examples: $maxExamples#g
 s#PATH_TO_BE_CONFIGURED/model.ckpt#PATH_TO_BE_CONFIGURED/${TFArch}_model.ckpt#g
-s#PATH_TO_BE_CONFIGURED/pet_label_map.pbtxt#../../$datasetTFlabels#g
-s#PATH_TO_BE_CONFIGURED/pet_train.record#../../$datasetTFtrain#g
-s#PATH_TO_BE_CONFIGURED/pet_val.record#../../$datasetTFvalid#g
-s#PATH_TO_BE_CONFIGURED/mscoco_label_map.pbtxt#../../$datasetTFlabels#g
-s#PATH_TO_BE_CONFIGURED/mscoco_train.record#../../$datasetTFtrain#g
-s#PATH_TO_BE_CONFIGURED/mscoco_val.record#../../$datasetTFvalid#g
+s#PATH_TO_BE_CONFIGURED/pet_label_map.pbtxt#../../$datasetFolder/$datasetTFlabels#g
+s#PATH_TO_BE_CONFIGURED/pet_train.record#../../$datasetFolder/$datasetTFtrain#g
+s#PATH_TO_BE_CONFIGURED/pet_val.record#../../$datasetFolder/$datasetTFvalid#g
+s#PATH_TO_BE_CONFIGURED/mscoco_label_map.pbtxt#../../$datasetFolder/$datasetTFlabels#g
+s#PATH_TO_BE_CONFIGURED/mscoco_train.record#../../$datasetFolder/$datasetTFtrain#g
+s#PATH_TO_BE_CONFIGURED/mscoco_val.record#../../$datasetFolder/$datasetTFvalid#g
 s#PATH_TO_BE_CONFIGURED#../../$datasetFolder#g
-" "$datasetTFconfig"
+" "$datasetFolder/$datasetTFconfig"
 
 # if maxTFEvals = 0, then don't set a limit
 if [[ $maxTFEvals == 0 ]]; then
-    sed -ri "s#max_evals: [0-9]+##g" "$datasetTFconfig"
+    sed -ri "s#max_evals: [0-9]+##g" "$datasetFolder/$datasetTFconfig"
 else
-    sed -ri "s#max_evals: [0-9]+#max_evals: $maxTFEvals#g" "$datasetTFconfig"
+    sed -ri "s#max_evals: [0-9]+#max_evals: $maxTFEvals#g" "$datasetFolder/$datasetTFconfig"
 fi

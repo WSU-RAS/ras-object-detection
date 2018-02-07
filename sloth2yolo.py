@@ -187,7 +187,7 @@ def yoloSplit(data, detectDuplicates=False, detectBlanks=False,
        examples/detector.c validate_detector_recall function.
     """
     # Get all these options from the config file
-    label_file      = config.datasetLabels
+    label_file      = os.path.join(config.datasetFolder, config.datasetLabels)
     data_prefix     = config.dataPrefix
     training_prefix = config.trainingPrefix
     validate_file   = config.validateFile
@@ -241,7 +241,7 @@ if __name__ == "__main__":
     labels = uniqueClasses(data)
 
     # Generate label files
-    results = yoloLabels(folder, data, labels, config.datasetLabels)
+    results = yoloLabels(folder, data, labels, os.path.join(folder, config.datasetLabels))
 
     # Generate lists for training, e.g. the 10% training, 20% training,
     # validation, testing sets, etc.

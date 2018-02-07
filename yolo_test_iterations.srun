@@ -15,12 +15,12 @@
 #
 # Learning curve files
 #
-config="$datasetConfig"
+config="$datasetFolder/$datasetConfig"
 name="$dataset" # we will use the ${name}.cfg file
 # .data files, labels, testing.txt, training.txt, etc.
 data="$remotedir"
 # Contains images/ and labels/
-datasetName="$datasetCompressed"
+datasetName="$datasetFolder/$datasetCompressed"
 # Darknet executable (in the data folder)
 darknet="darknet/darknet"
 # Where we'll save the results from testing

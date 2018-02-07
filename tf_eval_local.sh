@@ -6,9 +6,9 @@
 . config.py
 
 cd models/research
-mkdir -p "../../$datasetTFevallogs"
+mkdir -p "../../$datasetFolder/$datasetTFevallogs"
 export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
 python object_detection/eval.py \
-    --checkpoint_dir="../../$datasetTFtrainlogs" \
-    --eval_dir="../../$datasetTFevallogs" \
-    --pipeline_config_path="../../$datasetTFconfig"
+    --checkpoint_dir="../../$datasetFolder/$datasetTFtrainlogs" \
+    --eval_dir="../../$datasetFolder/$datasetTFevallogs" \
+    --pipeline_config_path="../../$datasetFolder/$datasetTFconfig"

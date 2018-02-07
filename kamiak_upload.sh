@@ -21,12 +21,12 @@ rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
     --include="*.names" --include="*.cfg" --include="*.sh" \
     --include="*.config" --include="*.srun" --include="*.py" \
     --include="datasets" --include="$datasetFolder" \
-    --include="$datasetCompressed" \
+    --include="$datasetFolder/$datasetCompressed" \
         --include="*model.ckpt.*" \
-        --include="$datasetTFtrain" \
-        --include="$datasetTFvalid" \
-        --include="$datasetTFtest" \
-        --include="$datasetTFlabels" \
+        --include="$datasetFolder/$datasetTFtrain" \
+        --include="$datasetFolder/$datasetTFvalid" \
+        --include="$datasetFolder/$datasetTFtest" \
+        --include="$datasetFolder/$datasetTFlabels" \
     --exclude="*" "$from" "$to"
 
 # Copy submodules

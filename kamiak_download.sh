@@ -11,8 +11,8 @@ rsync -Pahuv --exclude="old" --exclude="old_v2" --include="*/" \
     --include="*.err*" --exclude="*" "$from" "$to"
 
 # TensorFlow checkpoints and logs
-rsync -Pahuv --exclude="model.ckpt*" "$from/${datasetTFtrainlogs}/$TFArch/" "$to/${datasetTFtrainlogs}/$TFArch/"
-rsync -Pahuv --exclude="model.ckpt*" "$from/${datasetTFevallogs}/$TFArch/" "$to/${datasetTFevallogs}/$TFArch/"
+rsync -Pahuv --exclude="model.ckpt*" "$from/${datasetFolder}/${datasetTFtrainlogs}/$TFArch/" "$to/${datasetFolder}/${datasetTFtrainlogs}/$TFArch/"
+rsync -Pahuv --exclude="model.ckpt*" "$from/${datasetFolder}/${datasetTFevallogs}/$TFArch/" "$to/${datasetFolder}/${datasetTFevallogs}/$TFArch/"
 
 # TensorFlow exported models
 rsync -Pahuv --include="*.pb/***" --exclude="*" "$from/$datasetFolder/" "$to/$datasetFolder/"

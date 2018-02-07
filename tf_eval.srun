@@ -41,11 +41,11 @@ echo " - dataset"
 # The files must be datasets/YourDataSet/tftrain.record, etc. since the config
 # file specifies that directory
 mkdir -p "$datasetFolder"
-cp -a "$data/$datasetTFtrain" \
-      "$data/$datasetTFvalid" \
-      "$data/$datasetTFtest" \
-      "$data/$datasetTFlabels" \
-      "$data/$datasetTFconfig" \
+cp -a "$data/$datasetFolder/$datasetTFtrain" \
+      "$data/$datasetFolder/$datasetTFvalid" \
+      "$data/$datasetFolder/$datasetTFtest" \
+      "$data/$datasetFolder/$datasetTFlabels" \
+      "$data/$datasetFolder/$datasetTFconfig" \
       "$data/$datasetFolder/${TFArch}"_model.ckpt* \
       "$datasetFolder"
 echo " - TF models"
@@ -57,13 +57,13 @@ pip install --user tensorflow-gpu pillow lxml jupyter matplotlib
 echo "Making sure TensorFlow installed: done"
 
 echo "Evaluating network: started"
-mkdir -p "$data/${datasetTFevallogs}/$TFArch" # log dir, rsync this to view with TensorBoard
+mkdir -p "$data/${datasetFolder}/${datasetTFevallogs}/$TFArch" # log dir, rsync this to view with TensorBoard
 cd models/research
 export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
 python3 object_detection/eval.py \
-    --checkpoint_dir="$data/${datasetTFtrainlogs}/$TFArch" \
-    --eval_dir="$data/${datasetTFevallogs}/$TFArch" \
-    --pipeline_config_path="../../$datasetTFconfig"
+    --checkpoint_dir="$data/${datasetFolder}/${datasetTFtrainlogs}/$TFArch" \
+    --eval_dir="$data/${datasetFolder}/${datasetTFevallogs}/$TFArch" \
+    --pipeline_config_path="../../$datasetFolder/$datasetTFconfig"
 echo "Evaluating network: done"
 
 echo "Deleting workspace: started"
