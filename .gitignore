@@ -31,7 +31,7 @@ train_*/
 eval_*/
 
 # TensorFlow - these are generated with tf_gen_config.sh
-tf.config
+tf_*.config
 *.pbtxt
 
 # Python files

@@ -5,10 +5,16 @@
 #
 . config.py
 
+TFArch=$1
+if [[ -z $TFArch ]]; then
+    echo "Specify which model to train."
+    exit 1
+fi
+
 cd models/research
-mkdir -p "../../$datasetFolder/$datasetTFevallogs"
+mkdir -p "../../$datasetFolder/$datasetTFevallogs/$TFArch"
 export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
 python object_detection/eval.py \
-    --checkpoint_dir="../../$datasetFolder/$datasetTFtrainlogs" \
-    --eval_dir="../../$datasetFolder/$datasetTFevallogs" \
-    --pipeline_config_path="../../$datasetFolder/$datasetTFconfig"
+    --checkpoint_dir="../../$datasetFolder/$datasetTFtrainlogs/$TFArch" \
+    --eval_dir="../../$datasetFolder/$datasetTFevallogs/$TFArch" \
+    --pipeline_config_path="../../$datasetFolder/tf_${TFArch}.config"

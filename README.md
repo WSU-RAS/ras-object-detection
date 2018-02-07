@@ -52,7 +52,7 @@ Convert the JSON file to the formats needed for YOLO and TensorFlow.
     ./yolo_compress_dataset.sh
 
     ./sloth2tf.py
-    ./tf_gen_config.sh
+    ./tf_gen_config.sh rfcn_resnet101 ssd_mobilenet_v1 ssd_inception_v2 faster_rcnn_resnet101
 
 ## Training / Testing
  
@@ -104,14 +104,24 @@ testing what weights it has output.
 
     sbatch yolo_train.srun
     sbatch yolo_test.srun
-    sbatch yolo_test_terations.srun
+    sbatch yolo_test_iterations.srun
 
-    sbatch tf_train.srun
-    sbatch tf_eval.srun
+    # Note, run eval jobs at the same time as train
+    sbatch tf_train.srun rfcn_resnet101
+    sbatch tf_train.srun ssd_mobilenet_v1
+    sbatch tf_train.srun ssd_inception_v2
+    sbatch tf_train.srun faster_rcnn_resnet101
+    sbatch tf_eval.srun rfcn_resnet101
+    sbatch tf_eval.srun ssd_mobilenet_v1
+    sbatch tf_eval.srun ssd_inception_v2
+    sbatch tf_eval.srun faster_rcnn_resnet101
 
-After you're done training with TensorFlow, you can export the network:
+After you're done training with TensorFlow, you can export the networks:
 
-    sbatch tf_export.srun
+    sbatch tf_export.srun rfcn_resnet101
+    sbatch tf_export.srun ssd_mobilenet_v1
+    sbatch tf_export.srun ssd_inception_v2
+    sbatch tf_export.srun faster_rcnn_resnet101
 
 ### Monitor progress
 YOLO:

@@ -11,12 +11,19 @@ rsync -Pahuv --exclude="old" --exclude="old_v2" --include="*/" \
     --include="*.err*" --exclude="*" "$from" "$to"
 
 # TensorFlow checkpoints and logs
-rsync -Pahuv --exclude="model.ckpt*" "$from/${datasetFolder}/${datasetTFtrainlogs}/$TFArch/" "$to/${datasetFolder}/${datasetTFtrainlogs}/$TFArch/"
-rsync -Pahuv --exclude="model.ckpt*" "$from/${datasetFolder}/${datasetTFevallogs}/$TFArch/" "$to/${datasetFolder}/${datasetTFevallogs}/$TFArch/"
+rsync -Pahuv --exclude="model.ckpt*" \
+    "$from/${datasetFolder}/${datasetTFtrainlogs}/" \
+    "$to/${datasetFolder}/${datasetTFtrainlogs}/"
+rsync -Pahuv --exclude="model.ckpt*" \
+    "$from/${datasetFolder}/${datasetTFevallogs}/" \
+    "$to/${datasetFolder}/${datasetTFevallogs}/"
 
 # TensorFlow exported models
-rsync -Pahuv --include="*.pb/***" --exclude="*" "$from/$datasetFolder/" "$to/$datasetFolder/"
+rsync -Pahuv --include="*.pb/***" --exclude="*" \
+    "$from/$datasetFolder/" "$to/$datasetFolder/"
 
 # YOLO test results
-rsync -Pahuv "$from/datasets/$dataset/results/" "$to/datasets/$dataset/results/"
-rsync -Pahuv "$from/datasets/$dataset/results_iterations/" "$to/datasets/$dataset/results_iterations/"
+rsync -Pahuv "$from/datasets/$dataset/results/" \
+    "$to/datasets/$dataset/results/"
+rsync -Pahuv "$from/datasets/$dataset/results_iterations/" \
+    "$to/datasets/$dataset/results_iterations/"
