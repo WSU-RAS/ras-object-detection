@@ -154,7 +154,7 @@ if __name__ == "__main__":
 
         for amount in amounts:
             subset = results_iterations.loc[results_iterations['Amount'] == amount]
-            subset = subset.loc[subset['Iterations'] <= 20000]
+            #subset = subset.loc[subset['Iterations'] <= 20000]
             iou += [("Average IOU ("+str(amount)+")", subset[['Iterations','Average IOU']].values)]
             recall += [("Recall ("+str(amount)+")", subset[['Iterations','Recall']].values)]
 
