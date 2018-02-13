@@ -97,7 +97,7 @@ for i in *.data; do
             if [[ "$weights" == "$final" ]]; then
                 iterations="final"
             else
-                iterations="$(basename "$weights" | sed 's/[^0-9]*//g')"
+                iterations="$(basename "$weights" | sed -r 's/.*_([0-9]+)\..*/\1/g')"
             fi
 
             results="$resultsFolder/$amount/$iterations.txt"
