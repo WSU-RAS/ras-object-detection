@@ -7,7 +7,7 @@
 #SBATCH --nodes=1-1
 #SBATCH --gres=gpu:tesla:8
 #SBATCH --partition=taylor,kamiak,cahnrs_gpu,free_gpu,vcea,cahnrs,cahnrs_bigmem
-#SBATCH --time=3-00:00:00
+#SBATCH --time=5-00:00:00
 #SBATCH --mem=30G
 
 . config.py
