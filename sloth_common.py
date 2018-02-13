@@ -46,14 +46,20 @@ def uniqueClasses(data):
     
     return labels
 
-def mapLabel(labels, label):
+def mapLabel(labels, label, zeroIndexed=False):
     """
     Convert the given label to an integer based on where it is in the labels array
+
+    Note: YOLO needs zero-indexed. TensorFlow needs one-indexed.
     
     E.g.: mapLabel(['a', 'b', 'c', 'd'], 'c') # returns 2+1 = 3
     """
     assert label in labels, "Label must be in the list of labels"
-    return labels.index(label)+1
+
+    if zeroIndexed:
+        return labels.index(label)
+    else:
+        return labels.index(label)+1
 
 def getSize(filename):
     """

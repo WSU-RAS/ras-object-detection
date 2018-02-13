@@ -135,7 +135,7 @@ def yoloLabels(folder, data, labels, labellist):
         with open(output, 'w') as f:
             for a in image['annotations']:
                 # Get the class number
-                num = mapLabel(labels, a['class'])
+                num = mapLabel(labels, a['class'], zeroIndexed=True)
                 # Convert to YOLO format, see:
                 # https://github.com/PalouseRobosub/vision_dev/blob/master/sloth/annotation_containers/darknet.py
                 xpos = (a['width'] / 2 + a['x']) / x
