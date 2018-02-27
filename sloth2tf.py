@@ -10,7 +10,7 @@ import tensorflow as tf
 from models.research.object_detection.utils import dataset_util
 
 import config
-from sloth_common import getJson, uniqueClasses, getSize, mapLabel, splitData
+from sloth_common import getJson, uniqueClasses, predefinedClasses, getSize, mapLabel, splitData
 
 # Make this repeatable
 random.seed(0)
@@ -125,12 +125,14 @@ def main(_):
     folder = config.datasetFolder
     data = getJson(os.path.join(folder, "sloth.json"))
     labels = uniqueClasses(data)
+    #labels = predefinedClasses()
 
     # Save labels
     tfLabels(labels, os.path.join(folder, config.datasetTFlabels))
 
     # Split into 70%, 10%, and 20%
     training_data, validate_data, testing_data = splitJsonData(data)
+    #training_data, validate_data, testing_data = splitJsonData(data, trainPercent=0, validPercent=0)
 
     # Save the record files
     print("Saving", config.datasetTFtrain)

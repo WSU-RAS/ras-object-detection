@@ -9,15 +9,7 @@ import os
 import sys
 import json
 import config
-
-def getJson(file):
-    """
-    Load the JSON file
-    """
-    with open(file, 'r') as f:
-        data = json.load(f)
-    
-    return data
+from sloth_common import getJson
 
 def removeDeleted(data, ignoreClasses=[]):
     """

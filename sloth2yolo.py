@@ -10,7 +10,7 @@ import random
 import hashlib
 
 import config
-from sloth_common import getJson, uniqueClasses, getSize, mapLabel, splitData
+from sloth_common import getJson, uniqueClasses, predefinedClasses, getSize, mapLabel, splitData
 
 # Make this repeatable
 random.seed(0)
@@ -239,6 +239,7 @@ if __name__ == "__main__":
 
     # Get the labels out of the Sloth file
     labels = uniqueClasses(data)
+    #labels = predefinedClasses()
 
     # Generate label files
     results = yoloLabels(folder, data, labels, os.path.join(folder, config.datasetLabels))
@@ -246,3 +247,4 @@ if __name__ == "__main__":
     # Generate lists for training, e.g. the 10% training, 20% training,
     # validation, testing sets, etc.
     yoloSplit(results)
+    #yoloSplit(results, trainPercent=0, validPercent=0)

@@ -46,6 +46,13 @@ def uniqueClasses(data):
     
     return labels
 
+def predefinedClasses():
+    """
+    Return a fixed set of classes for training on one dataset and testing on
+    some subset of classes in a different dataset
+    """
+    return [ 'dog', 'food', 'glass', 'keys', 'leash', 'pillbottle', 'plant', 'umbrella', 'watercan' ]
+
 def mapLabel(labels, label, zeroIndexed=False):
     """
     Convert the given label to an integer based on where it is in the labels array
