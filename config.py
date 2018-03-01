@@ -5,14 +5,19 @@
 # no spaces before or after equal signs and no variables. Probably a better way
 # to do this.
 #
-dataset="SmartHome2"
-datasetFolder="datasets/SmartHome2"
+#dataset="SmartHomePhone"
+#datasetFolder="datasets/SmartHomePhone"
+#dataset="COCO"
+#datasetFolder="datasets/COCO"
+dataset="SmartHome3"
+datasetFolder="datasets/SmartHome3"
 
 # Files for TensorFlow - in datasetFolder
 datasetTFconfig="tf.config"
 datasetTFtrain="tftrain.record"
 datasetTFtest="tftest.record"
 datasetTFvalid="tfvalid.record"
+#datasetTFcompressed="tf_record.tar.gz"
 datasetTFlabels="tf_label_map.pbtxt"
 # Log files during training for TensorBoard - in datasetFolder
 datasetTFtrainlogs="tflogs/train"

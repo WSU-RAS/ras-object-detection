@@ -4,6 +4,6 @@
 . config.py
 N=$1
 [[ -z $N ]] && N=10
-out="datasets/$dataset/sloth.json"
+out="$datasetFolder/sloth.json"
 echo "Outputting to: $out every $N frames"
-[[ ! -e "$out" ]] && find "datasets/$dataset/images/" -iname "*.png" | sort | awk "NR%$N==0" | xargs sloth appendfiles "$out"
+[[ ! -e "$out" ]] && find "$datasetFolder/images/" -iname "*.png" -print0 | sort -z | awk -vORS=$'\0' "NR%$N==0" | xargs -0 sloth appendfiles "$out"

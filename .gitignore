@@ -1,6 +1,7 @@
 # Dataset
 *.png
 *.jpg
+*.jpeg
 
 # Matplotlib files
 *.pdf
@@ -48,6 +49,7 @@ __pycache__
 *.gz
 *.xz
 *.tar.*
+*.bag
 
 # Other random stuff
 *~

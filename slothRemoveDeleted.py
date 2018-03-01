@@ -46,5 +46,5 @@ def outputJson(data):
 
 if __name__ == "__main__":
     data = getJson(os.path.join(config.datasetFolder, "sloth.json"))
-    data = removeDeleted(data, ignoreClasses=["food", "watercan"])
+    data = removeDeleted(data, ignoreClasses=["keys"])
     outputJson(data)

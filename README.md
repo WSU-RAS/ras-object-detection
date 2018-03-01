@@ -13,22 +13,28 @@ Download this repository and all the submodules:
     git clone --recursive https://github.com/WSU-RAS/ras-object-detection.git
     cd ras-object-detection
 
-### Capturing bag file of images on robot
-Bring everything up on the robot, e.g.:
-
-    roslaunch turtlebot_bringup minimal.launch
-    roslaunch turtlebot_bringup 3dsensor.launch
-    roslaunch turtlebot_teleop keyboard_teleop.launch
-
-To record the camera video:
+### Images from video
+You can record on the robot or use your phone, for instance.
 
     rosrun image_view video_recorder image:=/camera/rgb/image_raw _filename:=video1.avi
 
+I then extract every 10th frame from all the video files and scale down / crop to 640x480:
+
+    mkdir images && for i in *.mp4; do
+        ffmpeg -i "$i" -vf scale=-2:480 tmp.mp4
+        ffmpeg -i tmp.mp4 -vf "select=not(mod(n\,10))" -filter:v "crop=640:in_h" -r 1/1 "images/${i//.mp4/} - %03d.png"
+        rm tmp.mp4
+    done
+
+Then I go through all the images and delete really bad ones, ones without
+objects, nearly-identical images, etc. with `ristretto .` that allows easy
+deleting without confirmation.
+
+### Images from bag file
 To record the camera images in a bag file:
 
     rosbag record /camera/rgb/image_raw /camera/depth/image_raw
 
-### Unbag the captured footage
 Note, to run this script, you need to be running `roscore`.
 
     python unbagger.py datasets/NewDataset/ data.bag
@@ -40,7 +46,9 @@ Edit `config.py` to set which dataset you wish to work with. Note this is for bo
 ### Label the images
 Output a JSON file with all the images and no annotations yet.
 
-    ./list_images.sh
+    ./list_images.sh # default: every 10th image
+    ./list_images.sh 1 # or: every image
+    ./list_images.sh 2 # or: every other image
 
 Open up Sloth (see my Arch [PKGBUILD](https://github.com/floft/PKGBUILDs/tree/master/python-sloth)) and then start to drawing bounding boxes around objects.
 
@@ -53,6 +61,12 @@ Convert the JSON file to the formats needed for YOLO and TensorFlow.
 
     ./sloth2tf.py
     ./tf_gen_config.sh rfcn_resnet101 ssd_mobilenet_v1 ssd_inception_v2 faster_rcnn_resnet101
+
+Note: you might want to manually edit the TensorFlow config afterwards to do
+different data augmentation, e.g. changing random crops, brightness changes,
+etc. If you have huge imbalances in clases, you might want to use JPEG images
+rather than PNG since I ended up having the tftrain.record file 53 GiB with PNG
+and 25 GiB with JPEG.
 
 ## Training / Testing
  

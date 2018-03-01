@@ -105,7 +105,7 @@ def getSize(filename):
             return
         return width, height
 
-def splitData(data, trainPercent, validPercent):
+def splitData(data, trainPercent, validPercent, limit=None):
     """
     Shuffle and then split the data into, e.g. 70% training, 10% validation,
     20% (remaining) testing.
@@ -113,14 +113,19 @@ def splitData(data, trainPercent, validPercent):
     # Shuffle
     random.shuffle(data)
 
+    if limit:
+        maxLen = min(limit, len(data))
+    else:
+        maxLen = len(data)
+
     # Calculate indices
-    training_end = math.floor(trainPercent*len(data))
-    validate_end = training_end + math.floor(validPercent*len(data))
+    training_end = math.floor(trainPercent*maxLen)
+    validate_end = training_end + math.floor(validPercent*maxLen)
     #testing_end  = remaining amount
 
     # Split
     training_data = data[:training_end]
     validate_data = data[training_end:validate_end]
-    testing_data  = data[validate_end:]
+    testing_data  = data[validate_end:maxLen]
 
     return training_data, validate_data, testing_data

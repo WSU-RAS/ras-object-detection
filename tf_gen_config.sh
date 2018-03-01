@@ -23,6 +23,10 @@ for TFArch; do
 
     # The ../../ is because we'll be running the training script from with
     # models/research/
+    #
+    # Note: I used to be using the validation set, but now I'm using the
+    # testing set for evaluation. Otherwise, we're never using that 20% of the
+    # data.
     sed -ri "
     s#num_classes: [0-9]+#num_classes: $classes#g
     s#num_examples: [0-9]+#num_examples: $maxExamples#g
@@ -32,7 +36,7 @@ for TFArch; do
     s#PATH_TO_BE_CONFIGURED/pet_val.record#../../$datasetFolder/$datasetTFvalid#g
     s#PATH_TO_BE_CONFIGURED/mscoco_label_map.pbtxt#../../$datasetFolder/$datasetTFlabels#g
     s#PATH_TO_BE_CONFIGURED/mscoco_train.record#../../$datasetFolder/$datasetTFtrain#g
-    s#PATH_TO_BE_CONFIGURED/mscoco_val.record#../../$datasetFolder/$datasetTFvalid#g
+    s#PATH_TO_BE_CONFIGURED/mscoco_val.record#../../$datasetFolder/$datasetTFtest#g
     s#PATH_TO_BE_CONFIGURED#../../$datasetFolder#g
     " "$datasetFolder/tf_${TFArch}.config"
 
