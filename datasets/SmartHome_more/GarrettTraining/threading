@@ -1,0 +1,58 @@
+#!/bin/bash
+##
+## A few simple functions to simplify sending a certain number of processes
+## to the background to speed up programs on multi-core systems.
+##
+## Notes:
+##
+##  * If you already have processes sent to the background, the thread count
+##    will be off.
+##  * This will mess up your current INT and TERM trap signals.
+##
+## Usage:
+##
+#   . /scripts/threading
+#   thread_init
+#
+#   for i in {1..100}; do
+#   	{ echo $i; sleep $i; } &
+#	thread_wait
+#   done
+#   
+#   thread_finish
+#
+
+_thread_count=$(($(grep processor /proc/cpuinfo 2>/dev/null|wc -l)-1))
+[[ $_thread_count == "" ]] && _thread_count=0 #ends up being one more than this
+
+_thread_kill() {
+	local t
+
+	for t; do
+		kill $t &>/dev/null
+	done
+
+	wait
+}
+
+#call this before starting any threads
+thread_init() {
+	_thread_list=()
+	trap "echo \"Exiting...\"; _thread_kill \"\${_thread_list[@]}\"; exit 1" 2 15
+}
+
+#call this after you start a thread
+thread_wait() {
+ 	_thread_list+=("$!")
+
+	while (( $(jobs|wc -l) > _thread_count )); do
+		sleep 0.05
+		jobs &>/dev/null
+	done
+}
+
+#call this after you are done starting threads
+thread_finish() {
+	wait
+	trap - 2 15
+}
