@@ -3,16 +3,20 @@
 Sloth to TensorFlow Object Detection
 
 Convert the .json file generated with Sloth to be in the format for TF.
+Also includes handling huge class imbalances, e.g. when you include some
+classes from the COCO dataset.
 """
 import os
 import imghdr
 import random
+import operator
 import tensorflow as tf
-from math import floor
+from math import floor, ceil
 from models.research.object_detection.utils import dataset_util
 
 import config
-from sloth_common import getJson, uniqueClasses, predefinedClasses, getSize, mapLabel, splitData
+from sloth_common import getJson, uniqueClasses, predefinedClasses, \
+    getSize, mapLabel, splitData
 
 # Make this repeatable
 random.seed(0)
@@ -98,7 +102,7 @@ def create_tf_example(labels, filename, annotations, debug=False):
     }))
     return tf_example
 
-def splitJsonData(data, trainPercent=0.7, validPercent=0.1):
+def splitJsonData(data, trainPercent=0.8, validPercent=0.2):
     """
     Split the JSON data so we can get a training, validation, and testing file
 
@@ -115,7 +119,7 @@ def splitJsonData(data, trainPercent=0.7, validPercent=0.1):
 
     return splitData(results, trainPercent, validPercent)
 
-def splitJsonDataBalanced(data, trainPercent=0.7, validPercent=0.1, limit=None):
+def splitJsonDataBalanced(data, trainPercent=0.8, validPercent=0.2, limit=None):
     """
     Split the JSON data so we can get a training, validation, and testing file
     However, due to class imbalances, split for each class. Oversample. Then
@@ -149,9 +153,6 @@ def splitJsonDataBalanced(data, trainPercent=0.7, validPercent=0.1, limit=None):
         #
         # simple case... but COCO human images (the reason I have to do any of
         # this) only have 1 since I only extracted the one class
-        #
-        # TODO make this properly handle the fact that images have multiple and
-        # we really want to balance classes not images
         className = "other"
 
         # If there's just one
@@ -166,6 +167,8 @@ def splitJsonDataBalanced(data, trainPercent=0.7, validPercent=0.1, limit=None):
         # Save it
         dataByClass[className].append((image['filename'], image['annotations']))
 
+    printFileDistribution(dataByClass)
+
     #
     # Split
     #
@@ -175,49 +178,151 @@ def splitJsonDataBalanced(data, trainPercent=0.7, validPercent=0.1, limit=None):
         splitByClass[className] = splitData(files, trainPercent, validPercent, limit)
 
     #
-    # Oversampling for training and validation data
-    # And, while doing it, combine all the split test/train/valid datasets
-    #
-    # We don't need to oversample testing since it outputs testing by class
-    # anyway, so we already know if human is good whereas keys is really bad.
+    # Oversampling for training and testing, undersampling for validation
     #
     train_data = []
     valid_data = []
     test_data = []
 
-    # Get max train len (valid should be proportional)
-    maxTrain = 0
+    totalTrain, totalValid, totalTest = totalClasses(splitByClass)
+
+    # Find class that has the most annotations
+    maxTrain = max(totalTrain.items(), key=operator.itemgetter(1))[1]
+    maxValid = max(totalValid.items(), key=operator.itemgetter(1))[1]
+    maxTest = max(totalTest.items(), key=operator.itemgetter(1))[1]
+
     for className, (training_data, validate_data, testing_data), in splitByClass.items():
-        if len(training_data) > maxTrain:
-            maxTrain = len(training_data)
-
-    print("Max training length:", maxTrain)
-
-    for className, (training_data, validate_data, testing_data), in splitByClass.items():
-        duplicateTimes = floor(maxTrain/len(training_data))
-
-        # Oversample training and validation data
-        for i in range(duplicateTimes):
-            train_data += training_data
-            valid_data += validate_data
-
-        # Don't oversample testing
+        # We want each image at least once
+        train_data += training_data
         test_data += testing_data
+
+        # Oversample (random selection with replacement) till we get the correct number
+        if len(training_data) > 0:
+            train_data += randomSelect(maxTrain, totalTrain, training_data, className)
+
+        if len(testing_data) > 0:
+            test_data += randomSelect(maxTest, totalTest, testing_data, className)
+
+    # Find class that has the minimum annotations
+    minTrain = min(totalTrain.items(), key=operator.itemgetter(1))[1]
+    minValid = min(totalValid.items(), key=operator.itemgetter(1))[1]
+    minTest = min(totalTest.items(), key=operator.itemgetter(1))[1]
+
+    for className, (training_data, validate_data, testing_data), in splitByClass.items():
+        if len(validate_data) > 0:
+            valid_data += randomSelect(minValid, {}, validate_data, className)
 
     printClassDistribution("Training", train_data)
     printClassDistribution("Validation", valid_data)
     printClassDistribution("Testing", test_data)
 
     return train_data, valid_data, test_data
-    #return [],[],[]
+
+def totalClasses(splitByClass):
+    """
+    Get the total number of each class in all the images for each split (train,
+    test, valid)
+    """
+    # Get the max number of classes
+    totalTrain = {}
+    totalValid = {}
+    totalTest = {}
+
+    # Set all to zero initially
+    for className, _ in splitByClass.items():
+        if className != "other":
+            totalTrain[className] = 0
+            totalValid[className] = 0
+            totalTest[className] = 0
+
+    # Count classes in each image's annotations
+    for className, (training_data, validate_data, testing_data) in splitByClass.items():
+        for filename, annotations in training_data:
+            counts = classCount(annotations)
+
+            for name, amount in counts.items():
+                totalTrain[name] += amount
+
+        for filename, annotations in validate_data:
+            counts = classCount(annotations)
+
+            for name, amount in counts.items():
+                totalValid[name] += amount
+
+        for filename, annotations in testing_data:
+            counts = classCount(annotations)
+
+            for name, amount in counts.items():
+                totalTest[name] += amount
+
+    return totalTrain, totalValid, totalTest
+
+def randomSelect(desired, totals, data, className):
+    """
+    Randomly select from the data until we have the desired number of the
+    specified class
+    """
+    results = []
+
+    if className in totals:
+        count = totals[className]
+    else:
+        count = 0
+
+    while count < desired:
+        choice = random.choice(data)
+        results.append(choice)
+
+        if className == "other":
+            # Approximate, won't end up being exact, but close enough
+            count += classCount(choice[1], findMax=True)[1]
+        else:
+            count += classCount(choice[1])[className]
+
+    return results
+
+def classCount(annotations, findMax=False):
+    """
+    Count how many of each class is in an image
+
+    If findMax is true, return the class that occurs the most frequently and
+    the number of times it does
+    """
+    classes = {}
+
+    for a in annotations:
+        if a['class'] not in classes:
+            classes[a['class']] = 1
+        else:
+            classes[a['class']] += 1
+
+    if findMax:
+        key = max(classes.items(), key=operator.itemgetter(1))[0]
+        return key, classes[key]
+    else:
+        return classes
+
+def printFileDistribution(dataByClass):
+    """
+    For debugging class imbalances, print out number of images having only one
+    particular class. Images with multiple classes are grouped into "other".
+    """
+    print("File distribution:")
+    for className, files in dataByClass.items():
+        print(className, ": ", len(files), sep="")
+    print()
 
 def printClassDistribution(desc, data):
+    """
+    For debugging class imbalances, print out how many are in each class and
+    the percentage of the total of that class in the final dataset
+    """
     classCount = {}
 
     for filename, annotations in data:
         for a in annotations:
             if a['class'] not in classCount:
-                classCount[a['class']] = 0
+                classCount[a['class']] = 1
             else:
                 classCount[a['class']] += 1
 
@@ -231,6 +336,9 @@ def printClassDistribution(desc, data):
 
     for className, count in classCount.items():
         print(className, ": ", count, " (", "%.2f"%(count/total*100), "%)", sep="")
+
+    # Print total files in each
+    print("Total files:", len(data))
 
     print()
 
@@ -263,8 +371,8 @@ def main(_):
     # Save labels
     tfLabels(labels, os.path.join(folder, config.datasetTFlabels))
 
-    # Split into 70%, 10%, and 20%
-    training_data, validate_data, testing_data = splitJsonDataBalanced(data)
+    # Split, e.g. 70% training, 10% validation, and 20% testing
+    training_data, validate_data, testing_data = splitJsonDataBalanced(data, limit=20000)
     #training_data, validate_data, testing_data = splitJsonData(data, trainPercent=0, validPercent=0)
 
     # Save the record files

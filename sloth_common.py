@@ -119,8 +119,8 @@ def splitData(data, trainPercent, validPercent, limit=None):
         maxLen = len(data)
 
     # Calculate indices
-    training_end = math.floor(trainPercent*maxLen)
-    validate_end = training_end + math.floor(validPercent*maxLen)
+    training_end = math.ceil(trainPercent*maxLen)
+    validate_end = training_end + math.ceil(validPercent*maxLen)
     #testing_end  = remaining amount
 
     # Split
