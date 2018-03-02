@@ -49,9 +49,7 @@ echo " - dataset"
 # The files must be datasets/YourDataSet/tftrain.record, etc. since the config
 # file specifies that directory
 mkdir -p "$datasetFolder"
-cp -a "$data/$datasetFolder/$datasetTFtrain" \
-      "$data/$datasetFolder/$datasetTFvalid" \
-      "$data/$datasetFolder/$datasetTFtest" \
+cp -a "$data/$datasetFolder/$datasetTFvalid" \
       "$data/$datasetFolder/$datasetTFlabels" \
       "$data/$datasetFolder/tf_${TFArch}.config" \
       "$data/$datasetFolder/${TFArch}"_model.ckpt* \

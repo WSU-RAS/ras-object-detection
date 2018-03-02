@@ -120,11 +120,12 @@ testing what weights it has output.
     sbatch yolo_test.srun
     sbatch yolo_test_iterations.srun
 
-    # Note, run eval jobs at the same time as train
     sbatch tf_train.srun rfcn_resnet101
     sbatch tf_train.srun ssd_mobilenet_v1
     sbatch tf_train.srun ssd_inception_v2
     sbatch tf_train.srun faster_rcnn_resnet101
+
+    # Note: run eval jobs as soon as the training starts outputting to tflogs/
     sbatch tf_eval.srun rfcn_resnet101
     sbatch tf_eval.srun ssd_mobilenet_v1
     sbatch tf_eval.srun ssd_inception_v2

@@ -216,6 +216,14 @@ def splitJsonDataBalanced(data, trainPercent=0.8, validPercent=0.2, limit=None):
     printClassDistribution("Validation", valid_data)
     printClassDistribution("Testing", test_data)
 
+    # Since we split by class, we shuffled in the classes but not among
+    # classes, so this will have all humans, then all plants, then ...  which
+    # ends up learning only humans, then only plants then, ... which doesn't
+    # really work.
+    random.shuffle(train_data)
+    random.shuffle(valid_data)
+    random.shuffle(test_data)
+
     return train_data, valid_data, test_data
 
 def totalClasses(splitByClass):
