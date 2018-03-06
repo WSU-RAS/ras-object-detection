@@ -153,3 +153,43 @@ TensorFlow:
 
     ./kamiak_tflogs.sh # Sync TF log directory every 30 seconds
      tensorboard  --logdir datasets/SmartHome/tflogs
+
+## COCO Dataset (Optional)
+If you wish to include some data from the COCO dataset, e.g. I wanted to
+include humans, first download the many gigs of files:
+
+    aursync google-cloud-sdk-minimal # For Arch Linux -- install gsutil somehow
+    mkdir COCO
+    cd COCO
+    mkdir annotations
+    gsutil -m rsync gs://images.cocodataset.org/annotations annotations
+    mkdir train2017
+    gsutil -m rsync gs://images.cocodataset.org/train2017 train2017
+
+Extract *annotations_trainval2017.zip*. Then extract all the annotations for
+the classes you want (see *coco2sloth.py* script):
+
+    python coco2sloth.py COCO/annotations/annotations_trainval2017/annotations/instances_train2017.json \
+        coco_train2017 > output.json
+
+Then copy the images for those annotations to your dataset:
+
+    mkdir -p datasets/SmartHome3/coco_train2017
+    grep filename output.json | sort -u | \
+        grep -o '\"[^"]*"$' | sed 's/"//g' | \
+        sed 's#.*/#../COCO/train2017/#g' | \
+        xargs -i cp --reflink=always {} datasets/SmartHome3/coco_train2017/
+
+Combine *ouput.csv* with the *datasets/SmartHome3/sloth.json* manually
+annotated file (concatenate the two arrays, i.e. remove the extra "] [" in the
+middle of the file).
+
+To see the class imbalance:
+
+    ./balance.sh
+
+On Kamiak, make sure you copy the pretrained weights:
+
+    cd datasets/SmartHome2/
+    cp -a faster_rcnn_resnet101_model.ckpt.* rfcn_resnet101_model.ckpt.* \
+        ssd_inception_v2_model.ckpt.* ssd_mobilenet_v1_model.ckpt.* ../SmartHome3/
