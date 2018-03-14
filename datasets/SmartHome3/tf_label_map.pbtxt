@@ -1,0 +1,40 @@
+item {
+  id: 1
+  name: 'dog'
+}
+item {
+  id: 2
+  name: 'food'
+}
+item {
+  id: 3
+  name: 'glass'
+}
+item {
+  id: 4
+  name: 'human'
+}
+item {
+  id: 5
+  name: 'keys'
+}
+item {
+  id: 6
+  name: 'leash'
+}
+item {
+  id: 7
+  name: 'pillbottle'
+}
+item {
+  id: 8
+  name: 'plant'
+}
+item {
+  id: 9
+  name: 'umbrella'
+}
+item {
+  id: 10
+  name: 'watercan'
+}

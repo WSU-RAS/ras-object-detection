@@ -1,0 +1,28 @@
+item {
+  id: 1
+  name: 'food'
+}
+item {
+  id: 2
+  name: 'glass'
+}
+item {
+  id: 3
+  name: 'keys'
+}
+item {
+  id: 4
+  name: 'pillbottle'
+}
+item {
+  id: 5
+  name: 'plant'
+}
+item {
+  id: 6
+  name: 'umbrella'
+}
+item {
+  id: 7
+  name: 'watercan'
+}
