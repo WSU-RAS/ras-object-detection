@@ -3,9 +3,9 @@
 #SBATCH --output=slurm_logs/tf_train_%j.out
 #SBATCH --error=slurm_logs/tf_train_%j.err
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=2
 #SBATCH --nodes=1-1
-#SBATCH --gres=gpu:tesla:4
+#SBATCH --gres=gpu:tesla:2
 #SBATCH --partition=taylor,kamiak,cahnrs_gpu,free_gpu,vcea,cahnrs,cahnrs_bigmem
 #SBATCH --time=3-00:00:00
 #SBATCH --mem=20G
