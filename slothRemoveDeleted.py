@@ -45,6 +45,7 @@ def outputJson(data):
     print(json.dumps(data, indent=4))
 
 if __name__ == "__main__":
-    data = getJson(os.path.join(config.datasetFolder, "sloth.json"))
-    data = removeDeleted(data, ignoreClasses=["keys"])
+    f = os.path.join(config.datasetFolder, "sloth.json")
+    data = getJson(f)
+    data = removeDeleted(data, ignoreClasses=["human"])
     outputJson(data)
