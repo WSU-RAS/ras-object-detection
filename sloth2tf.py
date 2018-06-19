@@ -102,7 +102,7 @@ def create_tf_example(labels, filename, annotations, debug=False):
     }))
     return tf_example
 
-def splitJsonData(data, trainPercent=0.8, validPercent=0.2):
+def splitJsonData(data, trainPercent=0.8, validPercent=0.2, shuffle=True):
     """
     Split the JSON data so we can get a training, validation, and testing file
 
@@ -117,7 +117,7 @@ def splitJsonData(data, trainPercent=0.8, validPercent=0.2):
 
         results.append((image['filename'], image['annotations']))
 
-    return splitData(results, trainPercent, validPercent)
+    return splitData(results, trainPercent, validPercent, shuffle=shuffle)
 
 def splitJsonDataBalanced(data, trainPercent=0.8, validPercent=0.2, limit=None):
     """
@@ -190,6 +190,7 @@ def splitJsonDataBalanced(data, trainPercent=0.8, validPercent=0.2, limit=None):
     maxTrain = max(totalTrain.items(), key=operator.itemgetter(1))[1]
     maxValid = max(totalValid.items(), key=operator.itemgetter(1))[1]
     maxTest = max(totalTest.items(), key=operator.itemgetter(1))[1]
+    #print("maxTrain:", maxTrain)
 
     for className, (training_data, validate_data, testing_data), in splitByClass.items():
         # We want each image at least once
@@ -207,6 +208,7 @@ def splitJsonDataBalanced(data, trainPercent=0.8, validPercent=0.2, limit=None):
     minTrain = min(totalTrain.items(), key=operator.itemgetter(1))[1]
     minValid = min(totalValid.items(), key=operator.itemgetter(1))[1]
     minTest = min(totalTest.items(), key=operator.itemgetter(1))[1]
+    #print("minTrain:", minTrain)
 
     for className, (training_data, validate_data, testing_data), in splitByClass.items():
         if len(validate_data) > 0:
@@ -379,17 +381,56 @@ def main(_):
     # Save labels
     tfLabels(labels, os.path.join(folder, config.datasetTFlabels))
 
-    # Split, e.g. 70% training, 10% validation, and 20% testing
-    training_data, validate_data, testing_data = splitJsonDataBalanced(data, limit=20000)
-    #training_data, validate_data, testing_data = splitJsonData(data, trainPercent=0, validPercent=0)
+    # Option to generate a learning curve. Note the learning curve does *not*
+    # balance classes.
+    learningCurve = True
 
-    # Save the record files
-    print("Saving", config.datasetTFtrain)
-    tfRecord(folder, labels, os.path.join(folder, config.datasetTFtrain), training_data)
-    print("Saving", config.datasetTFvalid)
-    tfRecord(folder, labels, os.path.join(folder, config.datasetTFvalid), validate_data)
-    print("Saving", config.datasetTFtest)
-    tfRecord(folder, labels, os.path.join(folder, config.datasetTFtest), testing_data)
+    if not learningCurve:
+        # Split, e.g. 80% training, 20% validation, and 0% testing
+        training_data, validate_data, testing_data = splitJsonDataBalanced(data, limit=20000)
+
+        # Save the record files
+        print("Saving", config.datasetTFtrain)
+        tfRecord(folder, labels, os.path.join(folder, config.datasetTFtrain), training_data)
+        print("Saving", config.datasetTFvalid)
+        tfRecord(folder, labels, os.path.join(folder, config.datasetTFvalid), validate_data)
+        print("Saving", config.datasetTFtest)
+        tfRecord(folder, labels, os.path.join(folder, config.datasetTFtest), testing_data)
+
+    else:
+        # Shuffle only once. If we set shuffle=True for splitJsonData in the
+        # for loop, then we'd end up with some of the validation/testing data
+        # in the training data at some point (most likely). This ensures it's
+        # shuffled, and then we just take less and less data for the learning
+        # curve. The later training sets will not include the
+        # validation/testing data since they are selected from the front of
+        # this data array and each iteration of smaller size.
+        random.shuffle(data)
+
+        # Generate learning curve: 10%, 20%, ..., 90%, 100% of training data
+        # of which the training data is 80% of the total data and 20% is validation data.
+        #
+        # Save the test set the first time, and leave it the same for all the others.
+        for p in [1, 0.9, 0.8, 0.7, 0.6, 0.5, 0.4, 0.3, 0.2, 0.1]:
+            percent = int(p*100)
+            training_data, validate_data, testing_data = splitJsonData(data,
+                    trainPercent=0.8*p, validPercent=0.2, shuffle=False)
+
+            # Save the record files
+            f = config.datasetTFtrain + "." + str(percent)
+            print("Saving", f)
+            tfRecord(folder, labels, os.path.join(folder, f), training_data)
+
+            # Only generate one validation and test set
+            if p == 1:
+                print("Saving", config.datasetTFvalid, "(same for each train set)")
+                tfRecord(folder, labels, os.path.join(folder, config.datasetTFvalid), validate_data)
+
+                print("Saving", config.datasetTFtest, "(same for each train set)")
+                tfRecord(folder, labels, os.path.join(folder, config.datasetTFtest), testing_data)
+
+    #for f, a in training_data:
+    #    print(f)
 
 if __name__ == "__main__":
     tf.app.run()

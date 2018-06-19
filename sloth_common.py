@@ -15,7 +15,7 @@ def getJson(file):
     """
     with open(file, 'r') as f:
         data = json.load(f)
-    
+
     return data
 
 def findFiles(folder):
@@ -35,15 +35,15 @@ def uniqueClasses(data):
     Get all the labels in the file and alphabetically sort them
     """
     labels = []
-    
+
     for f in data:
         for a in f['annotations']:
             if a['class'] not in labels:
                 labels.append(a['class'])
-    
+
     # Make it not depend on order of labels in the annotations
     labels.sort()
-    
+
     return labels
 
 def predefinedClasses():
@@ -58,7 +58,7 @@ def mapLabel(labels, label, zeroIndexed=False):
     Convert the given label to an integer based on where it is in the labels array
 
     Note: YOLO needs zero-indexed. TensorFlow needs one-indexed.
-    
+
     E.g.: mapLabel(['a', 'b', 'c', 'd'], 'c') # returns 2+1 = 3
     """
     assert label in labels, "Label must be in the list of labels"
@@ -105,13 +105,14 @@ def getSize(filename):
             return
         return width, height
 
-def splitData(data, trainPercent, validPercent, limit=None):
+def splitData(data, trainPercent, validPercent, limit=None, shuffle=True):
     """
     Shuffle and then split the data into, e.g. 70% training, 10% validation,
     20% (remaining) testing.
     """
     # Shuffle
-    random.shuffle(data)
+    if shuffle:
+        random.shuffle(data)
 
     if limit:
         maxLen = min(limit, len(data))

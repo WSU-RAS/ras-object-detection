@@ -1,9 +1,9 @@
 #
 # config file
-# 
+#
 # This is for both Python and Bash, so... make sure syntax works in both, i.e.
-# no spaces before or after equal signs and no variables. Probably a better way
-# to do this.
+# no spaces before or after equal signs and no variables. There likely is a
+# better way to do this.
 #
 #dataset="SmartHomePhone"
 #datasetFolder="datasets/SmartHomePhone"
@@ -23,7 +23,7 @@ datasetTFlabels="tf_label_map.pbtxt"
 datasetTFtrainlogs="tflogs/train"
 datasetTFevallogs="tflogs/eval"
 # For evaluation, 0 means forever (until job ends)
-maxTFEvals=0
+maxTFEvals=1 # For learning curve, just do one. Normally do 0 to monitor throughout.
 
 # Files for YOLO - in datasetFolder
 datasetLabels="labels.names"

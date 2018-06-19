@@ -24,6 +24,21 @@ else
     echo "TFArch: $TFArch"
 fi
 
+# If specified, then use this percentage (e.g. 100) for the learning curve. The
+# training record file must be appended with .100 in this case (or .90, etc.).
+Amount=$2
+suffix="" # Default no learning curve
+if [[ -z $Amount ]]; then
+    echo "Amount: none - not generating learning curve"
+    echo "Not handled yet. Use learning curve 100."
+    # Note: ideally we'd handle both learning curve and not, but for now use
+    # 100 to for normal use and ignore the other files
+    exit 1
+else
+    echo "Amount: $Amount (learning curve)"
+    suffix=".$Amount" # Appended to training record filename
+fi
+
 export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 module load cuda/8.0.44 cudnn/6.0_cuda8.0 python3/3.5.0
 data="$remotedir"
@@ -51,8 +66,8 @@ echo " - dataset"
 mkdir -p "$datasetFolder"
 cp -a "$data/$datasetFolder/$datasetTFvalid" \
       "$data/$datasetFolder/$datasetTFlabels" \
-      "$data/$datasetFolder/tf_${TFArch}.config" \
-      "$data/$datasetFolder/${TFArch}"_model.ckpt* \
+      "$data/$datasetFolder/tf_${TFArch}_${Amount}.config" \
+      "$data/$datasetFolder/${TFArch}_model_${Amount}".ckpt* \
       "$datasetFolder"
 echo " - TF models"
 cp -ra "$data/models" .
@@ -63,13 +78,13 @@ pip install --user tensorflow-gpu pillow lxml jupyter matplotlib
 echo "Making sure TensorFlow installed: done"
 
 echo "Evaluating network: started"
-mkdir -p "$data/${datasetFolder}/${datasetTFevallogs}/$TFArch" # log dir, rsync this to view with TensorBoard
+mkdir -p "$data/${datasetFolder}/${datasetTFevallogs}/$TFArch$suffix" # log dir, rsync this to view with TensorBoard
 cd models/research
 export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
 python3 object_detection/eval.py \
-    --checkpoint_dir="$data/${datasetFolder}/${datasetTFtrainlogs}/$TFArch" \
-    --eval_dir="$data/${datasetFolder}/${datasetTFevallogs}/$TFArch" \
-    --pipeline_config_path="../../$datasetFolder/tf_${TFArch}.config"
+    --checkpoint_dir="$data/${datasetFolder}/${datasetTFtrainlogs}/$TFArch$suffix" \
+    --eval_dir="$data/${datasetFolder}/${datasetTFevallogs}/$TFArch$suffix" \
+    --pipeline_config_path="../../$datasetFolder/tf_${TFArch}_${Amount}.config"
 echo "Evaluating network: done"
 
 echo "Deleting workspace: started"

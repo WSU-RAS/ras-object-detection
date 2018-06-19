@@ -22,13 +22,13 @@ rsync -Pahuv --include="./" --include="*.txt" --include="*.data" \
     --include="*.config" --include="*.srun" --include="*.py" \
     --include="datasets" --include="$datasetFolder" \
     --include="$datasetFolder/$datasetCompressed" \
-        --include="*model.ckpt.*" \
-        --include="$datasetFolder/$datasetTFcompressed" \
-        --include="$datasetFolder/$datasetTFtrain" \
-        --include="$datasetFolder/$datasetTFvalid" \
-        --include="$datasetFolder/$datasetTFtest" \
-        --include="$datasetFolder/$datasetTFlabels" \
+        --include="*model*.ckpt.*" \
+        --include="$datasetFolder/${datasetTFtrain}*" \
+        --include="$datasetFolder/${datasetTFvalid}*" \
+        --include="$datasetFolder/${datasetTFtest}" \
+        --include="$datasetFolder/${datasetTFlabels}" \
     --exclude="*" "$from" "$to"
+    #--include="$datasetFolder/${datasetTFcompressed}"
 
 # Copy submodules
 rsync -Pahuv "$from/darknet" "$to"

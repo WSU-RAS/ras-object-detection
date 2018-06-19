@@ -24,7 +24,7 @@ labels.names
 *.err
 
 # TensorFlow files
-*.record
+*.record*
 *.ckpt*
 *.pb
 tflogs*/

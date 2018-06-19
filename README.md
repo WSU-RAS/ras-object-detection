@@ -59,7 +59,7 @@ Convert the JSON file to the formats needed for YOLO and TensorFlow.
     ./sloth2yolo.py
     ./yolo_compress_dataset.sh
 
-    ./sloth2tf.py
+    ./sloth2tf.py # set learningCurve option to true/false if you wish
     ./tf_gen_config.sh rfcn_resnet101 ssd_mobilenet_v1 ssd_inception_v2 faster_rcnn_resnet101
 
 Note: you might want to manually edit the TensorFlow config afterwards to do
@@ -100,6 +100,14 @@ Before uploading to Kamiak, since *protoc* is not installed, make sure you run:
     cd models/research
     protoc object_detection/protos/*.proto --python_out=.
 
+Note: if you're generating a learning curve, ou need one of these model files for *each*:
+
+    for i in 100 90 80 70 60 50 40 30 20 10; do
+        cp ssd_mobilenet_v1_model{,_$i}.ckpt.meta
+        cp ssd_mobilenet_v1_model{,_$i}.ckpt.index
+        cp ssd_mobilenet_v1_model{,_$i}.ckpt.data-00000-of-00001
+    done
+
 ### Copy files over to Kamiak
 
     ./kamiak_upload.sh
@@ -130,6 +138,30 @@ testing what weights it has output.
     sbatch tf_eval.srun ssd_mobilenet_v1
     sbatch tf_eval.srun ssd_inception_v2
     sbatch tf_eval.srun faster_rcnn_resnet101
+
+    # If using learning curve then instead for training/evaluation:
+    sbatch tf_train.srun ssd_mobilenet_v1 10
+    sbatch tf_train.srun ssd_mobilenet_v1 20
+    sbatch tf_train.srun ssd_mobilenet_v1 30
+    sbatch tf_train.srun ssd_mobilenet_v1 40
+    sbatch tf_train.srun ssd_mobilenet_v1 50
+    sbatch tf_train.srun ssd_mobilenet_v1 60
+    sbatch tf_train.srun ssd_mobilenet_v1 70
+    sbatch tf_train.srun ssd_mobilenet_v1 80
+    sbatch tf_train.srun ssd_mobilenet_v1 90
+    sbatch tf_train.srun ssd_mobilenet_v1 100
+
+    # And after they're all done...
+    sbatch tf_eval.srun ssd_mobilenet_v1 10
+    sbatch tf_eval.srun ssd_mobilenet_v1 20
+    sbatch tf_eval.srun ssd_mobilenet_v1 30
+    sbatch tf_eval.srun ssd_mobilenet_v1 40
+    sbatch tf_eval.srun ssd_mobilenet_v1 50
+    sbatch tf_eval.srun ssd_mobilenet_v1 60
+    sbatch tf_eval.srun ssd_mobilenet_v1 70
+    sbatch tf_eval.srun ssd_mobilenet_v1 80
+    sbatch tf_eval.srun ssd_mobilenet_v1 90
+    sbatch tf_eval.srun ssd_mobilenet_v1 100
 
 After you're done training with TensorFlow, you can export the networks:
 
