@@ -8,7 +8,7 @@ to="$localdir"
 # YOLO backup files and weights, SLURM output files
 rsync -Pahuv --exclude="old" --exclude="old_v2" --include="*/" \
     --include="backup_100/*_final.weights" --include="*.out" \
-    --include="*.err" --exclude="*" "$from" "$to"
+    --include="*.err" --include="*.pickle" --exclude="*" "$from" "$to"
 
 # TensorFlow checkpoints and logs
 #rsync -Pahuv --exclude="model.ckpt*" \

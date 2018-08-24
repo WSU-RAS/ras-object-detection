@@ -24,6 +24,7 @@ datasetTFtrainlogs="tflogs/train"
 datasetTFevallogs="tflogs/eval"
 # For evaluation, 0 means forever (until job ends)
 maxTFEvals=1 # For learning curve, just do one. Normally do 0 to monitor throughout.
+#maxTFEvals=200000 # For learning curve, just do one. Normally do 0 to monitor throughout.
 
 # Files for YOLO - in datasetFolder
 datasetLabels="labels.names"

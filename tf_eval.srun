@@ -80,6 +80,8 @@ echo "Making sure TensorFlow installed: done"
 echo "Evaluating network: started"
 mkdir -p "$data/${datasetFolder}/${datasetTFevallogs}/$TFArch$suffix" # log dir, rsync this to view with TensorBoard
 cd models/research
+# disable using GPU since we're using them all for training
+#export CUDA_VISIBLE_DEVICES=
 export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
 python3 object_detection/eval.py \
     --checkpoint_dir="$data/${datasetFolder}/${datasetTFtrainlogs}/$TFArch$suffix" \
