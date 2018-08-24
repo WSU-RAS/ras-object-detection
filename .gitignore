@@ -24,20 +24,20 @@ labels.names
 *.err
 
 # TensorFlow files
-*.record
+*.record*
 *.ckpt*
 *.pb
-tflogs
+tflogs*/
 train_*/
 eval_*/
 
 # TensorFlow - these are generated with tf_gen_config.sh
 tf_*.config
-*.pbtxt
 
 # Python files
 __pycache__
 .ipynb_checkpoints
+*.pickle
 
 # Videos
 *.mp4
