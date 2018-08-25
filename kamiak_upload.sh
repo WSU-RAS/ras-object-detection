@@ -8,10 +8,10 @@ from="$localdir"
 to="$remotessh:$remotedir"
 
 # Update darknet
-git submodule update
-cd darknet
-git pull
-cd ..
+#git submodule update
+#cd darknet
+#git pull
+#cd ..
 
 # Copy only select files
 #

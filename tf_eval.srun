@@ -69,7 +69,9 @@ export PYTHONPATH="$PYTHONPATH:$(pwd):$(pwd)/slim"
 python3 object_detection/eval.py \
     --checkpoint_dir="$data/${datasetFolder}/${datasetTFtrainlogs}/$TFArch" \
     --eval_dir="$data/${datasetFolder}/${datasetTFevallogs}/$TFArch" \
-    --pipeline_config_path="../../$datasetFolder/tf_${TFArch}.config"
+    --pipeline_config_path="../../$datasetFolder/tf_${TFArch}.config" \
+    --pickle_path="$data/${datasetFolder}/${TFArch}.pickle" \
+    --run_once # for precision-recall curve, just run on final weights
 echo "Evaluating network: done"
 
 echo "Deleting workspace: started"

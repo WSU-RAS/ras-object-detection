@@ -1,6 +1,6 @@
 #
 # config file
-# 
+#
 # This is for both Python and Bash, so... make sure syntax works in both, i.e.
 # no spaces before or after equal signs and no variables. Probably a better way
 # to do this.
