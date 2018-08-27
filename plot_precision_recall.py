@@ -86,7 +86,19 @@ if __name__ == "__main__":
         #plotMarkers = ["s", "*", "x", "d", ".", "o", "v", "^", "<", ">", "1", "2", "3", "4" ]*5
         #plotLines = ['-', '--', '-.', ':']*10
 
-        plotCurve("Precision-Recall Curves by Class with "+key, "Precision", "Recall", curves, "precision_recall_"+key)
+        # In the paper we skipped SSD Inception and referred to SSD MobileNet as "SSD"
+        if key == 'ssd_inception_v2':
+            continue
+
+        titles = {
+                'faster_rcnn_resnet101': 'Faster R-CNN',
+                'rfcn_resnet101': 'R-FCN',
+                #'ssd_inception_v2': 'SSD Inception',
+                #'ssd_mobilenet_v1': 'SSD MobileNet',
+                'ssd_mobilenet_v1': 'SSD',
+            }
+
+        plotCurve("Precision-Recall Curves by Class with "+titles[key], "Precision", "Recall", curves, "precision_recall_"+key)
 
         print("Average precision per class (sanity check):")
         for i, cat in enumerate(values['categories']):
